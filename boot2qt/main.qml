@@ -1,68 +1,37 @@
 import QtQuick 2.2
 import QtQuick.Window 2.2
-import QtQuick.Enterprise.VirtualKeyboard 1.0
+//import "logiikka.js" as Logic
 
 Window {
     visible:true
-    width: Screen.width
-    height: Screen.height
+    width: 800
+    height: 480
 
-    Item {
-        id: root
+    Rectangle {
+        id: mainObject
         anchors.fill: parent
-
-        Text {
-            id: text
-            text: qsTr("Hello World")
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.topMargin: 100
-            anchors.top: parent.top
-        }
-
+        color: "green"
         Rectangle {
-            height: text.height * 1.2
-            width: text.width * 3
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: text.bottom
-            anchors.topMargin: 20
-            border.width: 2
-            radius: 4
-            border.color: "blue"
-
-            TextInput {
+            id: startButton
+            width: 200
+            height: 50
+            border.color: "black"
+            border.width: 3
+            Text {
                 anchors.fill: parent
-                anchors.margins: 4
-                text: "Text input, please type here"
+                text: "Start"
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+//                    Logic.startFreeRange();
+                    startButton.visible = false;
+                }
             }
         }
 
-        InputPanel {
-            id: inputPanel
-            z: 99
-            y: root.height
-            anchors.left: root.left
-            anchors.right: root.right
-
-            states: State {
-                name: "visible"
-                when: Qt.inputMethod.visible
-                PropertyChanges {
-                    target: inputPanel
-                    y: root.height - inputPanel.height
-                }
-            }
-            transitions: Transition {
-                from: ""
-                to: "visible"
-                reversible: true
-                ParallelAnimation {
-                    NumberAnimation {
-                        properties: "y"
-                        duration: 250
-                        easing.type: Easing.InOutQuad
-                    }
-                }
-            }
+        function cardReadyToAnchor(tunniste) {
+//            Logic.cardReadyToAnchor(tunniste);
         }
     }
 }
