@@ -1,7 +1,6 @@
-.pragma library
-
-var pakka = new Array(52);
-var korttiVali = 35;
+var deck = new Array(52);
+var cardSeparator = 30;
+var firstRowY = 40;
 
 function startFreeRange() {
     createDeck();
@@ -11,23 +10,23 @@ function startFreeRange() {
 
     for( var column = 0 ; (column < 7) && (index < 52) ; column++ )
     {
-        var yOrigin = 140;
+        var yOrigin = firstRowY;
         for( var round = 0 ; ((round < 7) || ((column < 3) && (round < 8))) && (index < 52) ; round++ )
         {
             if( round > column )
             {
-                anchorCardOverOther(pakka[index], pakka[index-1]);
+                anchorCardOverOther(deck[index], deck[index-1]);
             }
             else
             {
-                pakka[index].x = xOrigin;
-                pakka[index].y = yOrigin;
-                pakka[index].z = pakka[index].y;
+                deck[index].x = xOrigin;
+                deck[index].y = yOrigin;
+                deck[index].z = deck[index].y;
                 yOrigin += 5;
             }
             if( round >= column )
             {
-                pakka[index].naamaAlas = false;
+                deck[index].faceDown = false;
             }
             index++;
         }
@@ -36,7 +35,7 @@ function startFreeRange() {
 }
 
 function createDeck() {
-    var component = Qt.createComponent("Kortti.qml");
+    var component = Qt.createComponent("Card.qml");
     if (component.status === Component.Ready)
     {
         for( var suite = 0 ; suite < 4 ; suite++ ) {
@@ -53,17 +52,17 @@ function createDeck() {
 
 function createCard(component, suite, number)
 {
-    var suiteText = "pata"
+    var suiteText = "spade"
     switch( suite )
     {
     case 0:
-        suiteText = "ruutu";
+        suiteText = "diamond";
         break;
     case 1:
-        suiteText = "risti";
+        suiteText = "clubs";
         break;
     case 2:
-        suiteText = "hertta";
+        suiteText = "heart";
         break;
     default:
         break;
@@ -72,23 +71,23 @@ function createCard(component, suite, number)
     var newObject = component.createObject(mainObject);
     newObject.x = 30;
     newObject.y = 30;
-    newObject.numero = number+1;
-    newObject.maa = suiteText;
-    newObject.tunniste = toIndex(suite,number);
-    pakka[newObject.tunniste] = newObject;
+    newObject.myNumber = number+1;
+    newObject.mySuite = suiteText;
+    newObject.myId = toIndex(suite,number);
+    deck[newObject.myId] = newObject;
 }
 
 function shuffleDeck()
 {
     for( var index = 0 ; index < 52 ; index++ ) {
-        var cardToMove = pakka[index];
+        var cardToMove = deck[index];
         var newIndex = Math.floor(Math.random()*52);
-        pakka[index] = pakka[newIndex];
-        pakka[newIndex] = cardToMove;
+        deck[index] = deck[newIndex];
+        deck[newIndex] = cardToMove;
     }
     for( var index = 0 ; index < 52 ; index++ ) {
-        pakka[index].z = 10+index;
-        pakka[index].tunniste = index;
+        deck[index].z = 10+index;
+        deck[index].myId = index;
     }
 }
 
@@ -100,35 +99,35 @@ function toIndex(suite, number)
 function anchorCardOverOther(cardOnTop, cardBelow)
 {
     if( (cardBelow !== undefined) &&
-        cardOnTop.tunniste !== cardBelow.tunniste )
+        cardOnTop.myId !== cardBelow.myId )
     {
         cardOnTop.anchors.centerIn = cardBelow;
-        cardOnTop.anchors.verticalCenterOffset = korttiVali;
+        cardOnTop.anchors.verticalCenterOffset = cardSeparator;
         cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
     }
 }
 
 function cardReadyToAnchor(cardIndex)
 {
-    var cardToAnchor = pakka[cardIndex];
+    var cardToAnchor = deck[cardIndex];
     var selectedCard;
     for( var index = 0 ; index < 52 ; index++ )
     {
         // Reject exactly same coordinates to avoid loop reference
-        if( (pakka[index].x < cardToAnchor.x) &&
-            (cardToAnchor.x < (pakka[index].x + pakka[index].width)) &&
-            (pakka[index].y < cardToAnchor.y) &&
-            (cardToAnchor.y < (pakka[index].y + pakka[index].height)) )
+        if( (deck[index].x < cardToAnchor.x) &&
+            (cardToAnchor.x < (deck[index].x + deck[index].width)) &&
+            (deck[index].y < cardToAnchor.y) &&
+            (cardToAnchor.y < (deck[index].y + deck[index].height)) )
         {
             if( selectedCard == undefined )
             {
-                selectedCard = pakka[index];
+                selectedCard = deck[index];
             }
             else
             {
-                if( pakka[index].z > selectedCard.z )
+                if( deck[index].z > selectedCard.z )
                 {
-                    selectedCard = pakka[index];
+                    selectedCard = deck[index];
                 }
             }
         }

@@ -1,6 +1,6 @@
 import QtQuick 2.2
 import QtQuick.Window 2.2
-//import "logic.js" as Logic
+import "logic.js" as Logic
 
 Window {
     visible:true
@@ -24,42 +24,14 @@ Window {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-//                    Logic.startFreeRange();
+                    Logic.startFreeRange();
                     startButton.visible = false;
                 }
             }
         }
 
-        //TEMP, REMOVE WHEN CARD IS TESTED!!!
-        Card {
-            id: middleCard
-            myNumber: 12
-            mySuite: "diamond"
-            anchors.centerIn: parent
-        }
-        Card {
-            myNumber: 1
-            mySuite: "spade"
-            anchors.left: middleCard.right
-            anchors.top: middleCard.top
-        }
-        Card {
-            myNumber: 11
-            mySuite: "clubs"
-            anchors.right: middleCard.left
-            anchors.top: middleCard.top
-        }
-        Card {
-            myNumber: 13
-            mySuite: "heart"
-            anchors.top: middleCard.bottom
-            anchors.left: middleCard.left
-        }
-
-        //TEMP, REMOVE WHEN CARD IS TESTED!!!
-
         function cardReadyToAnchor(tunniste) {
-//            Logic.cardReadyToAnchor(tunniste);
+            Logic.cardReadyToAnchor(tunniste);
         }
     }
 }
