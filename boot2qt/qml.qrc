@@ -1,5 +1,13 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>logic.js</file>
+        <file>Card.qml</file>
+        <file>cardback.jpg</file>
+        <file>Clubs.qml</file>
+        <file>Diamond.qml</file>
+        <file>Heart.qml</file>
+        <file>Spade.qml</file>
+        <file>Suiteicon.qml</file>
     </qresource>
 </RCC>
