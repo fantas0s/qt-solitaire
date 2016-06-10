@@ -45,33 +45,17 @@ MouseArea {
         Suiteicon {
             id: suiteMark1
             x: 6
-            y: 22
+            y: 5
             suite: __card.mySuite
+            number: __card.myNumber
         }
 
         Suiteicon {
             id: suiteMark2
             x: __card.width-width-6
-            y: __card.height-height-22
-            suite: __card.mySuite
-            rotation: 180
-        }
-
-        Text {
-            id: myNumber1
-            x: __card.myNumber == 10 ? 3 : 7
-            y: 5
-            text: __card.myNumber == 1 ? "A" :
-                      __card.myNumber == 11 ? "J" :
-                          __card.myNumber == 12 ? "Q" :
-                              __card.myNumber == 13 ? "K" :
-                                  __card.myNumber
-        }
-        Text {
-            id: myNumber2
-            x: __card.width-width-myNumber1.x
             y: __card.height-height-5
-            text: myNumber1.text
+            suite: __card.mySuite
+            number: __card.myNumber
             rotation: 180
         }
     }
