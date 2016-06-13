@@ -10,5 +10,8 @@ TestCase {
     }
 
     function test_default_values() {
+        compare(cardSlotForTesting.width, 80)
+        compare(cardSlotForTesting.height, 120)
+        compare(cardSlotForTesting.border.width, 4)
     }
 }

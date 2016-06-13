@@ -6,6 +6,7 @@
         <file>cardback.jpg</file>
         <file>CardSlot.qml</file>
         <file>Clubs.qml</file>
+        <file>Desk.qml</file>
         <file>Diamond.qml</file>
         <file>Heart.qml</file>
         <file>Spade.qml</file>
