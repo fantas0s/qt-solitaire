@@ -17,7 +17,7 @@ TestCase {
         y: 1
     }
 
-    function test_default_values() {
+    function test_toIndex() {
         compare(Logic.toIndex(0,0), 0)
     }
     function test_anchorCardOverOther() {

@@ -4,6 +4,7 @@
         <file>logic.js</file>
         <file>Card.qml</file>
         <file>cardback.jpg</file>
+        <file>CardSlot.qml</file>
         <file>Clubs.qml</file>
         <file>Diamond.qml</file>
         <file>Heart.qml</file>
