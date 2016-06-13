@@ -31,7 +31,7 @@ Window {
         }
 
         function cardReadyToAnchor(tunniste) {
-            Logic.cardReadyToAnchor(tunniste);
+            return Logic.cardReadyToAnchor(tunniste);
         }
     }
 }

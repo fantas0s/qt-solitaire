@@ -7,8 +7,8 @@ MouseArea {
     property string mySuite: "spade"
     property int myNumber: 0
     property int myId: 0
-    //property Kortti cardBelow: undefined
-    //property Kortti cardAbove: undefined
+    property int storedX: x
+    property int storedY: y
     width: 80
     height: 120
     onClicked: {
@@ -16,10 +16,21 @@ MouseArea {
     }
     onPressed: {
         anchors.centerIn = undefined;
+        storedX = x;
+        storedY = y;
         z = 1000;
     }
     onReleased: {
-        mainObject.cardReadyToAnchor(myId);
+        if( false === mainObject.cardReadyToAnchor(myId) )
+        {
+            x = storedX+1;
+            y = storedY+1;
+            if( false === mainObject.cardReadyToAnchor(myId) )
+            {
+                x--;
+                y--;
+            }
+        }
     }
 
     drag.target: __card

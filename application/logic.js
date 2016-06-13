@@ -134,13 +134,5 @@ function cardReadyToAnchor(cardIndex)
             }
         }
     }
-    anchorCardOverOther(cardToAnchor, selectedCard);
-    if(selectedCard !== undefined)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return anchorCardOverOther(cardToAnchor, selectedCard);
 }
