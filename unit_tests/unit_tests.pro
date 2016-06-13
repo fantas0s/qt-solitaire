@@ -7,4 +7,5 @@ SOURCES += \
 DISTFILES += \
     tst_Suiteicon.qml \
     tst_logic.qml \
-    tst_CardSlot.qml
+    tst_CardSlot.qml \
+    tst_Card.qml
