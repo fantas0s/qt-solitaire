@@ -3,9 +3,13 @@ import QtTest 1.0
 import "../application"
 
 TestCase {
-    name: "MainTests"
+    name: "DeskTests"
+
+    Desk {
+        id: deskTotTest
+    }
 
     function test_default_values() {
-        compare(color, "white");
+        compare(deskTotTest.color, "#008000");
     }
 }
