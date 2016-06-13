@@ -99,12 +99,14 @@ function toIndex(suite, number)
 function anchorCardOverOther(cardOnTop, cardBelow)
 {
     if( (cardBelow !== undefined) &&
-        cardOnTop.myId !== cardBelow.myId )
+        (cardOnTop !== cardBelow) )
     {
         cardOnTop.anchors.centerIn = cardBelow;
         cardOnTop.anchors.verticalCenterOffset = cardSeparator;
         cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
+        return true;
     }
+    return false;
 }
 
 function cardReadyToAnchor(cardIndex)
@@ -119,7 +121,7 @@ function cardReadyToAnchor(cardIndex)
             (deck[index].y < cardToAnchor.y) &&
             (cardToAnchor.y < (deck[index].y + deck[index].height)) )
         {
-            if( selectedCard == undefined )
+            if( selectedCard === undefined )
             {
                 selectedCard = deck[index];
             }
@@ -133,4 +135,12 @@ function cardReadyToAnchor(cardIndex)
         }
     }
     anchorCardOverOther(cardToAnchor, selectedCard);
+    if(selectedCard !== undefined)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

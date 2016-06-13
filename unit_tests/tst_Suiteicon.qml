@@ -15,5 +15,6 @@ TestCase {
     function test_default_values() {
         compare(testableIcon.suite, "heart")
         compare(testableIcon.number, 1)
+        compare(testableIcon.width, 10)
     }
 }

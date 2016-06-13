@@ -5,4 +5,5 @@ SOURCES += \
     tst_qt-solitaire.cpp
 
 DISTFILES += \
-    tst_Suiteicon.qml
+    tst_Suiteicon.qml \
+    tst_logic.qml
