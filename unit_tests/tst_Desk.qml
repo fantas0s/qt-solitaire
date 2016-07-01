@@ -6,10 +6,10 @@ TestCase {
     name: "DeskTests"
 
     Desk {
-        id: deskToTest
+        id: mainObject
     }
 
     function test_default_values() {
-        compare(deskToTest.color, "#008000");
+        compare(mainObject.color, "#008000");
     }
 }

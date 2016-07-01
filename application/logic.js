@@ -142,7 +142,7 @@ function anchorCardOverOther(cardOnTop, cardBelow, offset)
 
 function cardReadyToAnchor(cardIndex)
 {
-    var cardToAnchor = deck[cardIndex];
+/*    var cardToAnchor = deck[cardIndex];
     var selectedCard;
     var offset = 0;
     for( var index = 0 ; index < 11 ; index++ )
@@ -188,5 +188,6 @@ function cardReadyToAnchor(cardIndex)
             }
         }
     }
-    return anchorCardOverOther(cardToAnchor, selectedCard, offset);
+    return anchorCardOverOther(cardToAnchor, selectedCard, offset);*/
+    return false;
 }

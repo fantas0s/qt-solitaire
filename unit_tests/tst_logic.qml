@@ -10,11 +10,13 @@ TestCase {
         id: cardForTesting
         x: 1
         y: 1
+        z: 10
     }
     Card {
         id: cardForMatching
         x: 1
         y: 1
+        z: 15
     }
 
     Desk {
@@ -25,9 +27,18 @@ TestCase {
         compare(Logic.toIndex(0,0), 0)
     }
     function test_anchorCardOverOther() {
-        compare(Logic.anchorCardOverOther(undefined, undefined), false)
-        compare(Logic.anchorCardOverOther(cardForTesting, cardForTesting), false)
-        compare(Logic.anchorCardOverOther(cardForMatching, cardForTesting), true)
+        compare(Logic.anchorCardOverOther(undefined, undefined, 0), false)
+        compare(Logic.anchorCardOverOther(cardForTesting, cardForTesting, 0), false)
+        compare(cardForTesting.z, 10)
+        compare(cardForMatching.z, 15)
+        compare(cardForMatching.anchors.centerIn, null)
+        compare(cardForMatching.anchors.verticalCenterOffset, 0)
+        compare(Logic.anchorCardOverOther(cardForMatching, cardForTesting, 99), true)
+        compare(cardForMatching.z, cardForTesting.z+1)
+        cardForTesting.z = 20;
+        compare(cardForMatching.z, 21)
+        compare(cardForMatching.anchors.centerIn, cardForTesting)
+        compare(cardForMatching.anchors.verticalCenterOffset, 99)
     }
 
     function test_cardReadyToAnchor()
