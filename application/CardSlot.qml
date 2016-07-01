@@ -5,4 +5,14 @@ Rectangle {
     width: 80
     height: 120
     border.width: 4
+    color: "transparent"
+    property bool aceMarkerVisible: false
+    Text {
+        id: aceMarker
+        anchors.centerIn: parent
+        visible: cardPlaceHolder.aceMarkerVisible
+        text: "A"
+        color: "#808080"
+        font.pixelSize: 80
+    }
 }

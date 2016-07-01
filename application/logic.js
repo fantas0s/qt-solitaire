@@ -1,28 +1,34 @@
 var deck = new Array(52);
+var cardSlots = new Array(11);
 var cardSeparator = 30;
-var firstRowY = 40;
+var faceDownCardSeparator = 5;
+var firstRowY = 5;
+var firstGameAreaRowY = 150;
+var firstColumnX = 30;
+var deltaX = 110;
 
 function startFreeRange() {
     createDeck();
     shuffleDeck();
+    createSlotsForFreeRange();
     var index = 0;
-    var xOrigin = 30;
+    var xOrigin = firstColumnX;
 
     for( var column = 0 ; (column < 7) && (index < 52) ; column++ )
     {
-        var yOrigin = firstRowY;
+        var yOrigin = firstGameAreaRowY;
         for( var round = 0 ; ((round < 7) || ((column < 3) && (round < 8))) && (index < 52) ; round++ )
         {
             if( round > column )
             {
-                anchorCardOverOther(deck[index], deck[index-1]);
+                anchorCardOverOther(deck[index], deck[index-1], cardSeparator);
             }
             else
             {
                 deck[index].x = xOrigin;
                 deck[index].y = yOrigin;
                 deck[index].z = deck[index].y;
-                yOrigin += 5;
+                yOrigin += faceDownCardSeparator;
             }
             if( round >= column )
             {
@@ -30,7 +36,7 @@ function startFreeRange() {
             }
             index++;
         }
-        xOrigin += 110;
+        xOrigin += deltaX;
     }
 }
 
@@ -69,8 +75,8 @@ function createCard(component, suite, number)
     }
 
     var newObject = component.createObject(mainObject);
-    newObject.x = 30;
-    newObject.y = 30;
+    newObject.x = firstColumnX;
+    newObject.y = firstRowY;
     newObject.myNumber = number+1;
     newObject.mySuite = suiteText;
     newObject.myId = toIndex(suite,number);
@@ -91,18 +97,43 @@ function shuffleDeck()
     }
 }
 
+function createSlotsForFreeRange()
+{
+    var component = Qt.createComponent("CardSlot.qml");
+    if (component.status === Component.Ready)
+    {
+        for( var index = 0 ; index < 7 ; index++ ) {
+            var newObject = component.createObject(mainObject);
+            newObject.x = firstColumnX + (index * deltaX);
+            newObject.y = firstGameAreaRowY;
+            cardSlots[index] = newObject;
+        }
+        for( index = 0 ; index < 4 ; index++ ) {
+            newObject = component.createObject(mainObject);
+            newObject.x = firstColumnX + (index * deltaX);
+            newObject.y = firstRowY;
+            newObject.aceMarkerVisible = true;
+            cardSlots[index+7] = newObject;
+        }
+    }
+    else if (component.status === Component.Error) {
+        console.log("Error: ");
+        console.log(component.errorString() );
+    }
+}
+
 function toIndex(suite, number)
 {
     return number + (suite*13);
 }
 
-function anchorCardOverOther(cardOnTop, cardBelow)
+function anchorCardOverOther(cardOnTop, cardBelow, offset)
 {
     if( (cardBelow !== undefined) &&
         (cardOnTop !== cardBelow) )
     {
         cardOnTop.anchors.centerIn = cardBelow;
-        cardOnTop.anchors.verticalCenterOffset = cardSeparator;
+        cardOnTop.anchors.verticalCenterOffset = offset;
         cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
         return true;
     }
@@ -113,26 +144,49 @@ function cardReadyToAnchor(cardIndex)
 {
     var cardToAnchor = deck[cardIndex];
     var selectedCard;
+    var offset = 0;
+    for( var index = 0 ; index < 11 ; index++ )
+    {
+        // First try card slots
+        var compareSlot = cardSlots[index];
+        if( (compareSlot.x < cardToAnchor.x) &&
+            (cardToAnchor.x < (compareSlot.x + compareSlot.width)) &&
+            (compareSlot.y < cardToAnchor.y) &&
+            (cardToAnchor.y < (compareSlot.y + compareSlot.height)) )
+        {
+            selectedCard = compareSlot;
+        }
+    }
+
     for( var index = 0 ; index < 52 ; index++ )
     {
+        var compareCard = deck[index];
         // Reject exactly same coordinates to avoid loop reference
-        if( (deck[index].x < cardToAnchor.x) &&
-            (cardToAnchor.x < (deck[index].x + deck[index].width)) &&
-            (deck[index].y < cardToAnchor.y) &&
-            (cardToAnchor.y < (deck[index].y + deck[index].height)) )
+        if( (compareCard.x < cardToAnchor.x) &&
+            (cardToAnchor.x < (compareCard.x + compareCard.width)) &&
+            (compareCard.y < cardToAnchor.y) &&
+            (cardToAnchor.y < (compareCard.y + compareCard.height)) )
         {
             if( selectedCard === undefined )
             {
-                selectedCard = deck[index];
+                selectedCard = compareCard;
             }
             else
             {
-                if( deck[index].z > selectedCard.z )
+                if( compareCard.z > selectedCard.z )
                 {
-                    selectedCard = deck[index];
+                    selectedCard = compareCard;
                 }
+            }
+            if( selectedCard.faceDown )
+            {
+                offset = faceDownCardSeparator;
+            }
+            else
+            {
+                offset = cardSeparator;
             }
         }
     }
-    return anchorCardOverOther(cardToAnchor, selectedCard);
+    return anchorCardOverOther(cardToAnchor, selectedCard, offset);
 }

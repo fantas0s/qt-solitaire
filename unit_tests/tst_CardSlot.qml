@@ -13,5 +13,8 @@ TestCase {
         compare(cardSlotForTesting.width, 80)
         compare(cardSlotForTesting.height, 120)
         compare(cardSlotForTesting.border.width, 4)
+        compare(cardSlotForTesting.border.color, "#000000")
+        compare(cardSlotForTesting.color, "#00000000")
+        compare(cardSlotForTesting.aceMarkerVisible, false)
     }
 }

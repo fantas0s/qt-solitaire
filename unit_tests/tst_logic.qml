@@ -17,6 +17,10 @@ TestCase {
         y: 1
     }
 
+    Desk {
+        id: mainObject
+    }
+
     function test_toIndex() {
         compare(Logic.toIndex(0,0), 0)
     }
@@ -34,5 +38,22 @@ TestCase {
             Logic.deck[index] = cardForMatching;
         }
         compare(Logic.cardReadyToAnchor(0), false)
+    }
+
+    function test_startFreeRange() {
+        compare(Logic.cardSlots[0], undefined);
+        Logic.startFreeRange();
+        compare(Logic.cardSlots[0].x, Logic.firstColumnX);
+        compare(Logic.cardSlots[0].y, Logic.firstGameAreaRowY);
+        compare(Logic.cardSlots[0].aceMarkerVisible, false);
+        compare(Logic.cardSlots[6].x, Logic.firstColumnX+(6*Logic.deltaX));
+        compare(Logic.cardSlots[6].y, Logic.firstGameAreaRowY);
+        compare(Logic.cardSlots[6].aceMarkerVisible, false);
+        compare(Logic.cardSlots[7].x, Logic.firstColumnX);
+        compare(Logic.cardSlots[7].y, Logic.firstRowY);
+        compare(Logic.cardSlots[7].aceMarkerVisible, true);
+        compare(Logic.cardSlots[10].x, Logic.firstColumnX+(3*Logic.deltaX));
+        compare(Logic.cardSlots[10].y, Logic.firstRowY);
+        compare(Logic.cardSlots[10].aceMarkerVisible, true);
     }
 }
