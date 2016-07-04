@@ -4,6 +4,9 @@ import "../application"
 
 TestCase {
     name: "CardSlotTests"
+    width: 800
+    height:480
+    when: windowShown
 
     CardSlot {
         id: cardSlotForTesting

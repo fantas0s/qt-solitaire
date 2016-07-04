@@ -129,13 +129,27 @@ function toIndex(suite, number)
 
 function anchorCardOverOther(cardOnTop, cardBelow, offset)
 {
-    if( (cardBelow !== undefined) &&
-        (cardOnTop !== cardBelow) )
+    if(cardBelow !== undefined)
     {
-        cardOnTop.anchors.centerIn = cardBelow;
-        cardOnTop.anchors.verticalCenterOffset = offset;
-        cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
-        return true;
+        var isPlacedOverSlot = false;
+        if( cardBelow.aboveMe === undefined )
+        {
+            isPlacedOverSlot = true;
+        }
+        if( (cardOnTop !== cardBelow) &&
+            ((cardBelow.aboveMe === null) ||
+             isPlacedOverSlot) )
+        {
+            cardOnTop.anchors.centerIn = cardBelow;
+            cardOnTop.anchors.verticalCenterOffset = offset;
+            cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
+            if( !isPlacedOverSlot )
+            {
+                cardBelow.aboveMe = cardOnTop;
+                cardOnTop.belowMe = cardBelow;
+            }
+            return true;
+        }
     }
     return false;
 }

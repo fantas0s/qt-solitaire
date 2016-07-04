@@ -22,6 +22,13 @@ TestCase {
         y: 1
         z: 15
     }
+    Card {
+        id: yetAnotherCard
+        myId: 11
+        x: 1
+        y: 1
+        z: 15
+    }
 
     Desk {
         id: mainObject
@@ -95,6 +102,14 @@ TestCase {
         compare(cardForMatching.z, 21)
         compare(cardForMatching.anchors.centerIn, cardForTesting)
         compare(cardForMatching.anchors.verticalCenterOffset, 99)
+        compare(cardForMatching.belowMe, cardForTesting)
+        compare(cardForTesting.aboveMe, cardForMatching)
+    }
+
+    function test_anchorCardOverOther_MiddleOfStack() {
+        cardForTesting.aboveMe = yetAnotherCard;
+        compare(Logic.anchorCardOverOther(cardForMatching, cardForTesting, 5), false)
+        cardForTesting.aboveMe = null;
     }
 
     function test_cardReadyToAnchor_idTooLarge()
@@ -119,6 +134,7 @@ TestCase {
         Logic.deck[51].y = 401;
         compare(Logic.cardReadyToAnchor(51), true)
         compare(Logic.deck[51].anchors.centerIn, Logic.deck[0])
+        Logic.deck[0].aboveMe = null;
         Logic.deck[51].anchors.centerIn = undefined;
         Logic.deck[51].x = 400+Logic.deck[0].width-1;
         Logic.deck[51].y = 400+Logic.deck[0].height-1;

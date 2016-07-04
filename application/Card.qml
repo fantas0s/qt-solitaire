@@ -7,6 +7,8 @@ MouseArea {
     property string mySuite: "spade"
     property int myNumber: 0
     property int myId: 0
+    property Item belowMe: null
+    property Item aboveMe: null
     property int storedX: x
     property int storedY: y
     width: 80
@@ -15,6 +17,11 @@ MouseArea {
         faceDown = !faceDown
     }
     onPressed: {
+        if( belowMe )
+        {
+            belowMe.aboveMe = null;
+            belowMe = null;
+        }
         anchors.centerIn = undefined;
         storedX = x;
         storedY = y;

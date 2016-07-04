@@ -4,6 +4,9 @@ import "../application"
 
 TestCase {
     name: "DeskTests"
+    width: 800
+    height: 480
+    when: windowShown
 
     Desk {
         id: mainObject
