@@ -118,9 +118,25 @@ TestCase {
         Logic.deck[51].x = 401;
         Logic.deck[51].y = 401;
         compare(Logic.cardReadyToAnchor(51), true)
+        compare(Logic.deck[51].anchors.centerIn, Logic.deck[0])
+        Logic.deck[51].anchors.centerIn = undefined;
         Logic.deck[51].x = 400+Logic.deck[0].width-1;
         Logic.deck[51].y = 400+Logic.deck[0].height-1;
         compare(Logic.cardReadyToAnchor(51), true)
+        compare(Logic.deck[51].anchors.centerIn, Logic.deck[0])
+        compare(Logic.deck[51].anchors.verticalCenterOffset, 5)
+    }
+
+    function test_cardReadyToAnchor_overFaceUpCard()
+    {
+        Logic.deck[16].x = 400;
+        Logic.deck[16].y = 400;
+        Logic.deck[16].faceDown = false;
+        Logic.deck[44].x = 401;
+        Logic.deck[44].y = 401;
+        compare(Logic.cardReadyToAnchor(44), true)
+        compare(Logic.deck[44].anchors.centerIn, Logic.deck[16])
+        compare(Logic.deck[44].anchors.verticalCenterOffset, 30)
     }
 
     function test_cardReadyToAnchor_notOverAnyCard()
@@ -148,9 +164,28 @@ TestCase {
         Logic.deck[51].x = 450;
         Logic.deck[51].y = 450;
         compare(Logic.cardReadyToAnchor(51), true)
+        compare(Logic.deck[51].anchors.centerIn, slot)
+        Logic.deck[51].anchors.centerIn = undefined;
         Logic.deck[51].x = 450+slot.width-1;
         Logic.deck[51].y = 450+slot.height-1;
         compare(Logic.cardReadyToAnchor(51), true)
+        compare(Logic.deck[51].anchors.centerIn, slot)
+        compare(Logic.deck[51].anchors.verticalCenterOffset, 0)
+    }
+
+    function test_cardReadyToAnchor_overACardOverASlot()
+    {
+        var slot = Logic.cardSlots[10];
+        slot.x = 450;
+        slot.y = 450;
+        Logic.deck[51].x = 450;
+        Logic.deck[51].y = 450;
+        Logic.cardReadyToAnchor(51)
+        Logic.deck[49].x = 450+slot.width-1;
+        Logic.deck[49].y = 450+slot.height-1;
+        compare(Logic.cardReadyToAnchor(49), true)
+        compare(Logic.deck[49].anchors.centerIn, Logic.deck[51])
+        compare(Logic.deck[49].anchors.verticalCenterOffset, 5)
     }
 
     function test_cardReadyToAnchor_notOverAnySlot()
@@ -167,6 +202,25 @@ TestCase {
         Logic.deck[42].x = slot.x;
         Logic.deck[42].x = slot.y+slot.height;
         compare(Logic.cardReadyToAnchor(42), false)
+    }
+
+    function test_cardReadyToAnchor_chooseHighestZ()
+    {
+        Logic.deck[16].x = 400;
+        Logic.deck[16].y = 400;
+        Logic.deck[16].z = 10;
+        Logic.deck[17].x = 400;
+        Logic.deck[17].y = 400;
+        Logic.deck[17].z = 12;
+        Logic.deck[18].x = 400;
+        Logic.deck[18].y = 400;
+        Logic.deck[18].z = 11;
+        Logic.deck[39].x = 401;
+        Logic.deck[39].y = 401;
+        Logic.deck[39].z = 100;
+        compare(Logic.cardReadyToAnchor(39), true)
+        compare(Logic.deck[39].anchors.centerIn, Logic.deck[17])
+        compare(Logic.deck[39].z, Logic.deck[17].z+1)
     }
 
     function test_startFreeRange() {

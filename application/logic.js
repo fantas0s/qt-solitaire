@@ -149,7 +149,8 @@ function cardReadyToAnchor(cardIndex)
 
     var cardToAnchor = deck[cardIndex];
     var selectedCard;
-//    var offset = 0;
+    var isSlot = false;
+    var offset = 0;
     for( var index = 0 ; index < 11 ; index++ )
     {
         // First try card slots
@@ -160,6 +161,7 @@ function cardReadyToAnchor(cardIndex)
             (cardToAnchor.y < (compareSlot.y + compareSlot.height)) )
         {
             selectedCard = compareSlot;
+            isSlot = true;
         }
     }
 
@@ -172,18 +174,19 @@ function cardReadyToAnchor(cardIndex)
             (compareCard.y < cardToAnchor.y) &&
             (cardToAnchor.y < (compareCard.y + compareCard.height)) )
         {
-/*            if( selectedCard === undefined )
-            {*/
+            if( selectedCard === undefined )
+            {
                 selectedCard = compareCard;
-/*
-        }
+            }
             else
             {
-                if( compareCard.z > selectedCard.z )
+                if( isSlot ||
+                    (compareCard.z > selectedCard.z) )
                 {
                     selectedCard = compareCard;
                 }
             }
+            isSlot = false;
             if( selectedCard.faceDown )
             {
                 offset = faceDownCardSeparator;
@@ -191,9 +194,8 @@ function cardReadyToAnchor(cardIndex)
             else
             {
                 offset = cardSeparator;
-            }*/
+            }
         }
     }
-/*    return anchorCardOverOther(cardToAnchor, selectedCard, offset);*/
-    return selectedCard !== undefined;
+    return anchorCardOverOther(cardToAnchor, selectedCard, offset);
 }
