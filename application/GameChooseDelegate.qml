@@ -16,6 +16,7 @@ Column {
         }
     }
     Text {
+        id: _solitaireName
         anchors.horizontalCenter: _solitaireImage.horizontalCenter
         text: solitaireName
     }

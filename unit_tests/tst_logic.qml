@@ -29,6 +29,9 @@ TestCase {
         y: 1
         z: 15
     }
+    CardSlot {
+        id: slotForTesting
+    }
 
     Desk {
         id: mainObject
@@ -112,9 +115,14 @@ TestCase {
         cardForTesting.aboveMe = null;
     }
 
+    function test_anchorCardOverSlot()
+    {
+        compare(Logic.anchorCardOverSlot(cardForTesting, slotForTesting), true)
+    }
+
     function test_cardReadyToAnchor_idTooLarge()
     {
-        compare(Logic.cardReadyToAnchor(52), false)
+        compare(Logic.cardReadyToAnchor(52, false), false)
     }
 
     function test_cardReadyToAnchor_sameXY()
@@ -123,7 +131,7 @@ TestCase {
         Logic.deck[9].y = 400;
         Logic.deck[23].x = 400;
         Logic.deck[23].y = 400;
-        compare(Logic.cardReadyToAnchor(23), false)
+        compare(Logic.cardReadyToAnchor(23, false), false)
     }
 
     function test_cardReadyToAnchor_overFirstCard()
@@ -132,13 +140,13 @@ TestCase {
         Logic.deck[0].y = 400;
         Logic.deck[51].x = 401;
         Logic.deck[51].y = 401;
-        compare(Logic.cardReadyToAnchor(51), true)
+        compare(Logic.cardReadyToAnchor(51, false), true)
         compare(Logic.deck[51].anchors.centerIn, Logic.deck[0])
         Logic.deck[0].aboveMe = null;
         Logic.deck[51].anchors.centerIn = undefined;
         Logic.deck[51].x = 400+Logic.deck[0].width-1;
         Logic.deck[51].y = 400+Logic.deck[0].height-1;
-        compare(Logic.cardReadyToAnchor(51), true)
+        compare(Logic.cardReadyToAnchor(51, false), true)
         compare(Logic.deck[51].anchors.centerIn, Logic.deck[0])
         compare(Logic.deck[51].anchors.verticalCenterOffset, 5)
     }
@@ -150,7 +158,7 @@ TestCase {
         Logic.deck[16].faceDown = false;
         Logic.deck[44].x = 401;
         Logic.deck[44].y = 401;
-        compare(Logic.cardReadyToAnchor(44), true)
+        compare(Logic.cardReadyToAnchor(44, false), true)
         compare(Logic.deck[44].anchors.centerIn, Logic.deck[16])
         compare(Logic.deck[44].anchors.verticalCenterOffset, 30)
     }
@@ -161,15 +169,15 @@ TestCase {
         Logic.deck[13].y = 390;
         Logic.deck[42].x = 389;
         Logic.deck[42].y = 391;
-        compare(Logic.cardReadyToAnchor(42), false)
+        compare(Logic.cardReadyToAnchor(42, false), false)
         Logic.deck[42].x = 391;
         Logic.deck[42].y = 389;
-        compare(Logic.cardReadyToAnchor(42), false)
+        compare(Logic.cardReadyToAnchor(42, false), false)
         Logic.deck[51].y = 390+Logic.deck[0].height;
-        compare(Logic.cardReadyToAnchor(42), false)
+        compare(Logic.cardReadyToAnchor(42, false), false)
         Logic.deck[51].x = 390+Logic.deck[0].width;
         Logic.deck[51].y = 391;
-        compare(Logic.cardReadyToAnchor(42), false)
+        compare(Logic.cardReadyToAnchor(42, false), false)
     }
 
     function test_cardReadyToAnchor_overASlot()
@@ -179,12 +187,12 @@ TestCase {
         slot.y = 450;
         Logic.deck[51].x = 450;
         Logic.deck[51].y = 450;
-        compare(Logic.cardReadyToAnchor(51), true)
+        compare(Logic.cardReadyToAnchor(51, false), true)
         compare(Logic.deck[51].anchors.centerIn, slot)
         Logic.deck[51].anchors.centerIn = undefined;
         Logic.deck[51].x = 450+slot.width-1;
         Logic.deck[51].y = 450+slot.height-1;
-        compare(Logic.cardReadyToAnchor(51), true)
+        compare(Logic.cardReadyToAnchor(51, false), true)
         compare(Logic.deck[51].anchors.centerIn, slot)
         compare(Logic.deck[51].anchors.verticalCenterOffset, 0)
     }
@@ -196,10 +204,10 @@ TestCase {
         slot.y = 450;
         Logic.deck[51].x = 450;
         Logic.deck[51].y = 450;
-        Logic.cardReadyToAnchor(51)
+        Logic.cardReadyToAnchor(51, false)
         Logic.deck[49].x = 450+slot.width-1;
         Logic.deck[49].y = 450+slot.height-1;
-        compare(Logic.cardReadyToAnchor(49), true)
+        compare(Logic.cardReadyToAnchor(49, false), true)
         compare(Logic.deck[49].anchors.centerIn, Logic.deck[51])
         compare(Logic.deck[49].anchors.verticalCenterOffset, 5)
     }
@@ -209,15 +217,15 @@ TestCase {
         var slot = Logic.cardSlots[10];
         Logic.deck[42].x = slot.x;
         Logic.deck[42].y = slot.y-1;
-        compare(Logic.cardReadyToAnchor(42), false)
+        compare(Logic.cardReadyToAnchor(42, false), false)
         Logic.deck[42].x = slot.x-1;
         Logic.deck[42].y = slot.y;
-        compare(Logic.cardReadyToAnchor(42), false)
+        compare(Logic.cardReadyToAnchor(42, false), false)
         Logic.deck[42].x = slot.x+slot.width;
-        compare(Logic.cardReadyToAnchor(42), false)
+        compare(Logic.cardReadyToAnchor(42, false), false)
         Logic.deck[42].x = slot.x;
         Logic.deck[42].x = slot.y+slot.height;
-        compare(Logic.cardReadyToAnchor(42), false)
+        compare(Logic.cardReadyToAnchor(42, false), false)
     }
 
     function test_cardReadyToAnchor_chooseHighestZ()
@@ -234,7 +242,7 @@ TestCase {
         Logic.deck[39].x = 401;
         Logic.deck[39].y = 401;
         Logic.deck[39].z = 100;
-        compare(Logic.cardReadyToAnchor(39), true)
+        compare(Logic.cardReadyToAnchor(39, false), true)
         compare(Logic.deck[39].anchors.centerIn, Logic.deck[17])
         compare(Logic.deck[39].z, Logic.deck[17].z+1)
     }

@@ -127,34 +127,30 @@ function toIndex(suite, number)
     return number + (suite*13);
 }
 
+function anchorCardOverSlot(cardToAnchor, slotToUse)
+{
+    return true;
+}
+
 function anchorCardOverOther(cardOnTop, cardBelow, offset)
 {
     if(cardBelow !== undefined)
     {
-        var isPlacedOverSlot = false;
-        if( cardBelow.aboveMe === undefined )
-        {
-            isPlacedOverSlot = true;
-        }
         if( (cardOnTop !== cardBelow) &&
-            ((cardBelow.aboveMe === null) ||
-             isPlacedOverSlot) )
+            (cardBelow.aboveMe === null) )
         {
             cardOnTop.anchors.centerIn = cardBelow;
             cardOnTop.anchors.verticalCenterOffset = offset;
             cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
-            if( !isPlacedOverSlot )
-            {
-                cardBelow.aboveMe = cardOnTop;
-                cardOnTop.belowMe = cardBelow;
-            }
+            cardBelow.aboveMe = cardOnTop;
+            cardOnTop.belowMe = cardBelow;
             return true;
         }
     }
     return false;
 }
 
-function cardReadyToAnchor(cardIndex)
+function cardReadyToAnchor(cardIndex, applyRuling)
 {
     if( !(52 > cardIndex) )
     {
@@ -211,5 +207,12 @@ function cardReadyToAnchor(cardIndex)
             }
         }
     }
-    return anchorCardOverOther(cardToAnchor, selectedCard, offset);
+    if( isSlot )
+    {
+        return anchorCardOverSlot(cardToAnchor, selectedCard);
+    }
+    else
+    {
+        return anchorCardOverOther(cardToAnchor, selectedCard, offset);
+    }
 }

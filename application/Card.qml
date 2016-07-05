@@ -28,12 +28,13 @@ MouseArea {
         z = 1000;
     }
     onReleased: {
-        if( false === mainObject.cardReadyToAnchor(myId) )
+        if( false === mainObject.cardReadyToAnchor(myId, true) )
         {
             x = storedX+1;
             y = storedY+1;
-            if( false === mainObject.cardReadyToAnchor(myId) )
+            if( false === mainObject.cardReadyToAnchor(myId, false) )
             {
+                console.log("Card was left to float at x:", x, " y:", y);
                 x--;
                 y--;
             }
