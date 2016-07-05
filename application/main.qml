@@ -9,5 +9,19 @@ Window {
     Desk {
         id: mainObject
         anchors.fill: parent
+        visible: false
+    }
+    GameChooser {
+        id: chooser
+        anchors.fill: parent
+        visible: true
+        onGameSelected: {
+            console.log("YES", gameName)
+            if( mainObject.startGame(gameName) )
+            {
+                mainObject.visible = true;
+                chooser.visible = false;
+            }
+        }
     }
 }

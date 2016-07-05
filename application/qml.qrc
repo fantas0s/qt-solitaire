@@ -11,5 +11,12 @@
         <file>Heart.qml</file>
         <file>Spade.qml</file>
         <file>Suiteicon.qml</file>
+        <file>GameChooser.qml</file>
+        <file>GameChooseDelegate.qml</file>
+        <file>GameChooseModel.qml</file>
+        <file>images/fathers_solitaire.png</file>
+        <file>images/napoleons_grave.png</file>
+        <file>images/pyramid_solitaire.png</file>
+        <file>images/the_clock.png</file>
     </qresource>
 </RCC>

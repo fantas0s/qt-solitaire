@@ -3,10 +3,14 @@ import "logic.js" as Logic
 
 Rectangle {
     color: "green"
-    Component.onCompleted: {
-                Logic.startFreeRange();
-            }
-
+    function startGame(gameName) {
+        if( gameName === "Father's Solitaire" )
+        {
+            Logic.startFreeRange();
+            return true;
+        }
+        return false;
+    }
     function cardReadyToAnchor(tunniste) {
         return Logic.cardReadyToAnchor(tunniste);
     }
