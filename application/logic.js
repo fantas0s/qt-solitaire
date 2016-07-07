@@ -129,7 +129,16 @@ function toIndex(suite, number)
 
 function anchorCardOverSlot(cardToAnchor, slotToUse)
 {
-    return true;
+    if( slotToUse.aboveMe === null )
+    {
+        slotToUse.aboveMe = cardToAnchor;
+        cardToAnchor.belowMe = slotToUse;
+        cardToAnchor.anchors.centerIn = slotToUse;
+        cardToAnchor.anchors.verticalCenterOffset = 0;
+        cardToAnchor.z = Qt.binding(function() {return slotToUse.z+1});
+        return true;
+    }
+    return false;
 }
 
 function anchorCardOverOther(cardOnTop, cardBelow, offset)

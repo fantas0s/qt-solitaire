@@ -117,7 +117,31 @@ TestCase {
 
     function test_anchorCardOverSlot()
     {
+        cardForTesting.anchors.verticalCenterOffset = 101;
         compare(Logic.anchorCardOverSlot(cardForTesting, slotForTesting), true)
+        compare(slotForTesting.aboveMe, cardForTesting)
+        compare(cardForTesting.belowMe, slotForTesting)
+        compare(cardForTesting.anchors.centerIn, slotForTesting)
+        compare(cardForTesting.anchors.verticalCenterOffset, 0)
+        compare(cardForTesting.z, slotForTesting.z+1)
+        slotForTesting.z++;
+        compare(cardForTesting.z, slotForTesting.z+1)
+        slotForTesting.aboveMe = null;
+        cardForTesting.belowMe = null;
+        cardForTesting.anchors.centerIn = undefined;
+    }
+
+    function test_anchorCardOverReservedSlot()
+    {
+        compare(Logic.anchorCardOverSlot(yetAnotherCard, slotForTesting), true)
+        cardForTesting.anchors.verticalCenterOffset = 101;
+        cardForTesting.z = 25;
+        compare(Logic.anchorCardOverSlot(cardForTesting, slotForTesting), false)
+        compare(cardForTesting.belowMe, null)
+        compare(cardForTesting.anchors.centerIn, null)
+        compare(cardForTesting.anchors.verticalCenterOffset, 101)
+        compare(cardForTesting.z, 25)
+        slotForTesting.aboveMe = null;
     }
 
     function test_cardReadyToAnchor_idTooLarge()
@@ -192,9 +216,11 @@ TestCase {
         Logic.deck[51].anchors.centerIn = undefined;
         Logic.deck[51].x = 450+slot.width-1;
         Logic.deck[51].y = 450+slot.height-1;
+        Logic.cardSlots[10].aboveMe = null;
         compare(Logic.cardReadyToAnchor(51, false), true)
         compare(Logic.deck[51].anchors.centerIn, slot)
         compare(Logic.deck[51].anchors.verticalCenterOffset, 0)
+        Logic.cardSlots[10].aboveMe = null;
     }
 
     function test_cardReadyToAnchor_overACardOverASlot()

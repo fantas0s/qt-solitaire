@@ -7,6 +7,7 @@ Rectangle {
     border.width: 4
     color: "transparent"
     property bool aceMarkerVisible: false
+    property Item aboveMe: null
     Text {
         id: aceMarker
         anchors.centerIn: parent
