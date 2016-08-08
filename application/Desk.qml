@@ -6,7 +6,7 @@ Rectangle {
     function startGame(gameName) {
         if( gameName === "Father's Solitaire" )
         {
-            Logic.startFreeRange();
+            Logic.startFathersSolitaire();
             return true;
         }
         return false;

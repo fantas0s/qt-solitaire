@@ -39,7 +39,7 @@ TestCase {
 
     function init_data() {
         Logic.createDeck();
-        Logic.createSlotsForFreeRange();
+        Logic.createSlotsForFathersSolitaire();
     }
 
     function test_1_toIndex() {
@@ -80,16 +80,16 @@ TestCase {
         // Already created in init_data()
         compare(Logic.cardSlots[0].x, Logic.firstColumnX);
         compare(Logic.cardSlots[0].y, Logic.firstGameAreaRowY);
-        compare(Logic.cardSlots[0].aceMarkerVisible, false);
+        compare(Logic.cardSlots[0].isAceSlot, false);
         compare(Logic.cardSlots[6].x, Logic.firstColumnX+(6*Logic.deltaX));
         compare(Logic.cardSlots[6].y, Logic.firstGameAreaRowY);
-        compare(Logic.cardSlots[6].aceMarkerVisible, false);
+        compare(Logic.cardSlots[6].isAceSlot, false);
         compare(Logic.cardSlots[7].x, Logic.firstColumnX);
         compare(Logic.cardSlots[7].y, Logic.firstRowY);
-        compare(Logic.cardSlots[7].aceMarkerVisible, true);
+        compare(Logic.cardSlots[7].isAceSlot, true);
         compare(Logic.cardSlots[10].x, Logic.firstColumnX+(3*Logic.deltaX));
         compare(Logic.cardSlots[10].y, Logic.firstRowY);
-        compare(Logic.cardSlots[10].aceMarkerVisible, true);
+        compare(Logic.cardSlots[10].isAceSlot, true);
     }
 
     function test_anchorCardOverOther() {
@@ -206,7 +206,7 @@ TestCase {
 
     function test_cardReadyToAnchor_overASlot()
     {
-        var slot = Logic.cardSlots[10];
+        var slot = Logic.cardSlots[1];
         slot.x = 450;
         slot.y = 450;
         Logic.deck[51].x = 450;
@@ -216,10 +216,28 @@ TestCase {
         Logic.deck[51].anchors.centerIn = undefined;
         Logic.deck[51].x = 450+slot.width-1;
         Logic.deck[51].y = 450+slot.height-1;
-        Logic.cardSlots[10].aboveMe = null;
+        Logic.cardSlots[1].aboveMe = null;
         compare(Logic.cardReadyToAnchor(51, false), true)
         compare(Logic.deck[51].anchors.centerIn, slot)
         compare(Logic.deck[51].anchors.verticalCenterOffset, 0)
+        Logic.cardSlots[1].aboveMe = null;
+    }
+
+    function test_cardReadyToAnchor_overAnAceSlot()
+    {
+        var slot = Logic.cardSlots[10];
+        slot.x = 450;
+        slot.y = 450;
+        slot.isAceSlot = true;
+        Logic.deck[51].x = 450;
+        Logic.deck[51].y = 450;
+        compare(Logic.cardReadyToAnchor(51, false), false)
+        compare(Logic.deck[51].anchors.centerIn, null)
+        Logic.deck[0].x = 450;
+        Logic.deck[0].y = 450;
+        compare(Logic.cardReadyToAnchor(0, false), true)
+        compare(Logic.deck[0].anchors.centerIn, slot)
+        compare(Logic.deck[0].anchors.verticalCenterOffset, 0)
         Logic.cardSlots[10].aboveMe = null;
     }
 
@@ -274,6 +292,8 @@ TestCase {
     }
 
     function test_startFreeRange() {
-        Logic.startFreeRange();
+        Logic.startFathersSolitaire();
+        compare(Logic.cardSlots[0].aboveMe, Logic.deck[0])
+        compare(Logic.cardSlots[6].aboveMe, Logic.deck[45])
     }
 }

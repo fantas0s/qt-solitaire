@@ -6,12 +6,12 @@ Rectangle {
     height: 120
     border.width: 4
     color: "transparent"
-    property bool aceMarkerVisible: false
+    property bool isAceSlot: false
     property Item aboveMe: null
     Text {
         id: aceMarker
         anchors.centerIn: parent
-        visible: cardPlaceHolder.aceMarkerVisible
+        visible: cardPlaceHolder.isAceSlot
         text: "A"
         color: "#808080"
         font.pixelSize: 80

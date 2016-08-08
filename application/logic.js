@@ -7,10 +7,10 @@ var firstGameAreaRowY = 150;
 var firstColumnX = 30;
 var deltaX = 110;
 
-function startFreeRange() {
+function startFathersSolitaire() {
     createDeck();
     shuffleDeck();
-    createSlotsForFreeRange();
+    createSlotsForFathersSolitaire();
     var index = 0;
     var xOrigin = firstColumnX;
 
@@ -19,20 +19,24 @@ function startFreeRange() {
         var yOrigin = firstGameAreaRowY;
         for( var round = 0 ; ((round < 7) || ((column < 3) && (round < 8))) && (index < 52) ; round++ )
         {
-            if( round > column )
-            {
-                anchorCardOverOther(deck[index], deck[index-1], cardSeparator);
-            }
-            else
-            {
-                deck[index].x = xOrigin;
-                deck[index].y = yOrigin;
-                deck[index].z = deck[index].y;
-                yOrigin += faceDownCardSeparator;
-            }
             if( round >= column )
             {
                 deck[index].faceDown = false;
+            }
+            if( round > 0 )
+            {
+                if( deck[index-1].faceDown )
+                {
+                    anchorCardOverOther(deck[index], deck[index-1], faceDownCardSeparator);
+                }
+                else
+                {
+                    anchorCardOverOther(deck[index], deck[index-1], cardSeparator);
+                }
+            }
+            else
+            {
+                anchorCardOverSlot(deck[index], cardSlots[column]);
             }
             index++;
         }
@@ -97,7 +101,7 @@ function shuffleDeck()
     }
 }
 
-function createSlotsForFreeRange()
+function createSlotsForFathersSolitaire()
 {
     var component = Qt.createComponent("CardSlot.qml");
     if (component.status === Component.Ready)
@@ -106,13 +110,15 @@ function createSlotsForFreeRange()
             var newObject = component.createObject(mainObject);
             newObject.x = firstColumnX + (index * deltaX);
             newObject.y = firstGameAreaRowY;
+            newObject.z = 1;
             cardSlots[index] = newObject;
         }
         for( index = 0 ; index < 4 ; index++ ) {
             newObject = component.createObject(mainObject);
             newObject.x = firstColumnX + (index * deltaX);
             newObject.y = firstRowY;
-            newObject.aceMarkerVisible = true;
+            newObject.z = 54;
+            newObject.isAceSlot = true;
             cardSlots[index+7] = newObject;
         }
     }
@@ -129,7 +135,9 @@ function toIndex(suite, number)
 
 function anchorCardOverSlot(cardToAnchor, slotToUse)
 {
-    if( slotToUse.aboveMe === null )
+    if( (slotToUse.aboveMe === null) &&
+        ((!slotToUse.isAceSlot) ||
+         (cardToAnchor.myNumber === 1)) )
     {
         slotToUse.aboveMe = cardToAnchor;
         cardToAnchor.belowMe = slotToUse;

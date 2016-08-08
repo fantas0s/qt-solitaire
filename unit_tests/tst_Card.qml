@@ -47,6 +47,6 @@ TestCase {
         cardForTesting.clicked(10, 10, Qt.leftButton, Qt.NoModifier, 10);
         compare(cardForTesting.faceDown, false)
         cardForTesting.clicked(10, 10, Qt.leftButton, Qt.NoModifier, 10);
-        compare(cardForTesting.faceDown, true)
+        compare(cardForTesting.faceDown, false)
     }
 }

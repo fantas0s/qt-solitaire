@@ -14,29 +14,41 @@ MouseArea {
     width: 80
     height: 120
     onClicked: {
-        faceDown = !faceDown
+        if( faceDown &&
+            (aboveMe === null) )
+        {
+            faceDown = false;
+        }
     }
     onPressed: {
-        if( belowMe )
+        if( !faceDown )
         {
-            belowMe.aboveMe = null;
-            belowMe = null;
+            if( belowMe )
+            {
+                belowMe.aboveMe = null;
+                belowMe = null;
+            }
+            anchors.centerIn = null;
+            storedX = x;
+            storedY = y;
+            z = 1000;
         }
-        anchors.centerIn = undefined;
-        storedX = x;
-        storedY = y;
-        z = 1000;
     }
     onReleased: {
-        if( false === mainObject.cardReadyToAnchor(myId, true) )
+        if( !faceDown )
         {
-            x = storedX+1;
-            y = storedY+1;
-            if( false === mainObject.cardReadyToAnchor(myId, false) )
+            if( ((x === storedX) &&
+                 (y === storedY)) ||
+                ( false === mainObject.cardReadyToAnchor(myId, true) ) )
             {
-                console.log("Card was left to float at x:", x, " y:", y);
-                x--;
-                y--;
+                x = storedX+1;
+                y = storedY+1;
+                if( false === mainObject.cardReadyToAnchor(myId, false) )
+                {
+                    console.log("Card was left to float at x:", x, " y:", y);
+                    x--;
+                    y--;
+                }
             }
         }
     }
