@@ -11,7 +11,7 @@ Rectangle {
         }
         return false;
     }
-    function cardReadyToAnchor(tunniste) {
-        return Logic.cardReadyToAnchor(tunniste);
+    function cardReadyToAnchor(index, applyRuling) {
+        return Logic.cardReadyToAnchor(index, applyRuling);
     }
 }

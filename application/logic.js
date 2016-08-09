@@ -6,6 +6,7 @@ var firstRowY = 5;
 var firstGameAreaRowY = 150;
 var firstColumnX = 30;
 var deltaX = 110;
+var rules = 0;
 
 function startFathersSolitaire() {
     createDeck();
@@ -13,6 +14,7 @@ function startFathersSolitaire() {
     createSlotsForFathersSolitaire();
     var index = 0;
     var xOrigin = firstColumnX;
+    rules = 1;
 
     for( var column = 0 ; (column < 7) && (index < 52) ; column++ )
     {
@@ -27,16 +29,16 @@ function startFathersSolitaire() {
             {
                 if( deck[index-1].faceDown )
                 {
-                    anchorCardOverOther(deck[index], deck[index-1], faceDownCardSeparator);
+                    anchorCardOverOther(deck[index], deck[index-1], false);
                 }
                 else
                 {
-                    anchorCardOverOther(deck[index], deck[index-1], cardSeparator);
+                    anchorCardOverOther(deck[index], deck[index-1], false);
                 }
             }
             else
             {
-                anchorCardOverSlot(deck[index], cardSlots[column]);
+                anchorCardOverSlot(deck[index], cardSlots[column], false);
             }
             index++;
         }
@@ -133,35 +135,140 @@ function toIndex(suite, number)
     return number + (suite*13);
 }
 
-function anchorCardOverSlot(cardToAnchor, slotToUse)
+function rulesAllowCardOverSlot(cardInQuestion, slotToUse)
 {
-    if( (slotToUse.aboveMe === null) &&
-        ((!slotToUse.isAceSlot) ||
-         (cardToAnchor.myNumber === 1)) )
+    switch( rules )
     {
-        slotToUse.aboveMe = cardToAnchor;
-        cardToAnchor.belowMe = slotToUse;
-        cardToAnchor.anchors.centerIn = slotToUse;
-        cardToAnchor.anchors.verticalCenterOffset = 0;
-        cardToAnchor.z = Qt.binding(function() {return slotToUse.z+1});
+    case 1: //Father's solitaire
+        {
+            // Ace can be only over ace slot
+            if( slotToUse.isAceSlot )
+            {
+                if(cardInQuestion.myNumber === 1)
+                {
+                    // and it must be alone
+                    if( cardInQuestion.aboveMe === null )
+                        return true;
+                }
+                return false;
+            }
+            // allows any card over empty slot when it's not ace slot
+            return true;
+        }
+    default: //No rules, everything allowed
         return true;
+    }
+}
+
+function anchorCardOverSlot(cardToAnchor, slotToUse, applyRuling)
+{
+    if( (slotToUse.aboveMe === null) )
+    {
+        if( !applyRuling ||
+            rulesAllowCardOverSlot(cardToAnchor, slotToUse) )
+        {
+            slotToUse.aboveMe = cardToAnchor;
+            cardToAnchor.belowMe = slotToUse;
+            cardToAnchor.anchors.centerIn = slotToUse;
+            cardToAnchor.anchors.verticalCenterOffset = 0;
+            cardToAnchor.z = Qt.binding(function() {return slotToUse.z+1});
+            return true;
+        }
     }
     return false;
 }
 
-function anchorCardOverOther(cardOnTop, cardBelow, offset)
+function cardIsOverAceSlot(cardObject)
+{
+    var slot = cardObject.belowMe;
+    while( (slot.belowMe !== undefined) &&
+           (slot.belowMe !== null) )
+    {
+        slot = slot.belowMe;
+    }
+    if( slot.isAceSlot )
+        return true;
+    else
+        return false;
+}
+
+function rulesAllowCardOverOther(cardOnTop, cardBelow)
+{
+    switch( rules )
+    {
+    case 1: //Father's solitaire
+        {
+            if( cardBelow.faceDown )
+                return false; // Never OK to be over face down card
+            if( cardIsOverAceSlot(cardBelow) )
+            {
+                // Card needs to be of same suite and one larger than the one below
+                if( (cardBelow.mySuite === cardOnTop.mySuite) &&
+                    ((cardBelow.myNumber+1) === cardOnTop.myNumber) )
+                {
+                    // Card needs to be alone
+                    if( cardOnTop.aboveMe === null )
+                        return true;
+                }
+                return false;
+            }
+            // Card needs to be of same suite and one smaller than the one below
+            if( (cardBelow.mySuite === cardOnTop.mySuite) &&
+                (cardBelow.myNumber === (cardOnTop.myNumber+1)) )
+                return true;
+            else
+                return false;
+        }
+    default: //No rules, everything allowed
+        return true;
+    }
+}
+
+function getDefaultOffset(cardBelow)
+{
+    // Default pileup
+    if( cardBelow.faceDown )
+        return faceDownCardSeparator;
+    else
+        return cardSeparator;
+}
+
+function offsetFromRuling(cardBelow)
+{
+    switch( rules )
+    {
+    case 1: //Father's solitaire
+        {
+        if( cardIsOverAceSlot(cardBelow) )
+            return 0;
+        else
+            return getDefaultOffset(cardBelow);
+        }
+    default:
+        return getDefaultOffset(cardBelow);
+    }
+}
+
+function anchorCardOverOther(cardOnTop, cardBelow, applyRuling)
 {
     if(cardBelow !== undefined)
     {
         if( (cardOnTop !== cardBelow) &&
             (cardBelow.aboveMe === null) )
         {
-            cardOnTop.anchors.centerIn = cardBelow;
-            cardOnTop.anchors.verticalCenterOffset = offset;
-            cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
-            cardBelow.aboveMe = cardOnTop;
-            cardOnTop.belowMe = cardBelow;
-            return true;
+            if( !applyRuling ||
+                rulesAllowCardOverOther(cardOnTop, cardBelow) )
+            {
+                cardOnTop.anchors.centerIn = cardBelow;
+                if( applyRuling )
+                    cardOnTop.anchors.verticalCenterOffset = offsetFromRuling(cardBelow);
+                else
+                    cardOnTop.anchors.verticalCenterOffset = getDefaultOffset(cardBelow);
+                cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
+                cardBelow.aboveMe = cardOnTop;
+                cardOnTop.belowMe = cardBelow;
+                return true;
+            }
         }
     }
     return false;
@@ -177,11 +284,10 @@ function cardReadyToAnchor(cardIndex, applyRuling)
     var cardToAnchor = deck[cardIndex];
     var selectedCard;
     var isSlot = false;
-    var offset = 0;
-    for( var index = 0 ; index < 11 ; index++ )
+    for( var slotLoopIndex = 0 ; slotLoopIndex < 11 ; slotLoopIndex++ )
     {
         // First try card slots
-        var compareSlot = cardSlots[index];
+        var compareSlot = cardSlots[slotLoopIndex];
         if( (compareSlot.x <= cardToAnchor.x) &&
             (cardToAnchor.x < (compareSlot.x + compareSlot.width)) &&
             (compareSlot.y <= cardToAnchor.y) &&
@@ -192,9 +298,9 @@ function cardReadyToAnchor(cardIndex, applyRuling)
         }
     }
 
-    for( var index = 0 ; index < 52 ; index++ )
+    for( var cardLoopIndex = 0 ; cardLoopIndex < 52 ; cardLoopIndex++ )
     {
-        var compareCard = deck[index];
+        var compareCard = deck[cardLoopIndex];
         // Reject exactly same coordinates to avoid loop reference
         if( (compareCard.x < cardToAnchor.x) &&
             (cardToAnchor.x < (compareCard.x + compareCard.width)) &&
@@ -214,22 +320,14 @@ function cardReadyToAnchor(cardIndex, applyRuling)
                 }
             }
             isSlot = false;
-            if( selectedCard.faceDown )
-            {
-                offset = faceDownCardSeparator;
-            }
-            else
-            {
-                offset = cardSeparator;
-            }
         }
     }
     if( isSlot )
     {
-        return anchorCardOverSlot(cardToAnchor, selectedCard);
+        return anchorCardOverSlot(cardToAnchor, selectedCard, applyRuling);
     }
     else
     {
-        return anchorCardOverOther(cardToAnchor, selectedCard, offset);
+        return anchorCardOverOther(cardToAnchor, selectedCard, applyRuling);
     }
 }

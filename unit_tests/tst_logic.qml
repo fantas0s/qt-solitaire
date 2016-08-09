@@ -93,32 +93,32 @@ TestCase {
     }
 
     function test_anchorCardOverOther() {
-        compare(Logic.anchorCardOverOther(undefined, undefined, 0), false)
-        compare(Logic.anchorCardOverOther(cardForTesting, cardForTesting, 0), false)
+        compare(Logic.anchorCardOverOther(undefined, undefined, false), false)
+        compare(Logic.anchorCardOverOther(cardForTesting, cardForTesting, false), false)
         compare(cardForTesting.z, 10)
         compare(cardForMatching.z, 15)
         compare(cardForMatching.anchors.centerIn, null)
         compare(cardForMatching.anchors.verticalCenterOffset, 0)
-        compare(Logic.anchorCardOverOther(cardForMatching, cardForTesting, 99), true)
+        compare(Logic.anchorCardOverOther(cardForMatching, cardForTesting, false), true)
         compare(cardForMatching.z, cardForTesting.z+1)
         cardForTesting.z = 20;
         compare(cardForMatching.z, 21)
         compare(cardForMatching.anchors.centerIn, cardForTesting)
-        compare(cardForMatching.anchors.verticalCenterOffset, 99)
+        compare(cardForMatching.anchors.verticalCenterOffset, 5)
         compare(cardForMatching.belowMe, cardForTesting)
         compare(cardForTesting.aboveMe, cardForMatching)
     }
 
     function test_anchorCardOverOther_MiddleOfStack() {
         cardForTesting.aboveMe = yetAnotherCard;
-        compare(Logic.anchorCardOverOther(cardForMatching, cardForTesting, 5), false)
+        compare(Logic.anchorCardOverOther(cardForMatching, cardForTesting, false), false)
         cardForTesting.aboveMe = null;
     }
 
     function test_anchorCardOverSlot()
     {
         cardForTesting.anchors.verticalCenterOffset = 101;
-        compare(Logic.anchorCardOverSlot(cardForTesting, slotForTesting), true)
+        compare(Logic.anchorCardOverSlot(cardForTesting, slotForTesting, false), true)
         compare(slotForTesting.aboveMe, cardForTesting)
         compare(cardForTesting.belowMe, slotForTesting)
         compare(cardForTesting.anchors.centerIn, slotForTesting)
@@ -133,10 +133,10 @@ TestCase {
 
     function test_anchorCardOverReservedSlot()
     {
-        compare(Logic.anchorCardOverSlot(yetAnotherCard, slotForTesting), true)
+        compare(Logic.anchorCardOverSlot(yetAnotherCard, slotForTesting, false), true)
         cardForTesting.anchors.verticalCenterOffset = 101;
         cardForTesting.z = 25;
-        compare(Logic.anchorCardOverSlot(cardForTesting, slotForTesting), false)
+        compare(Logic.anchorCardOverSlot(cardForTesting, slotForTesting, false), false)
         compare(cardForTesting.belowMe, null)
         compare(cardForTesting.anchors.centerIn, null)
         compare(cardForTesting.anchors.verticalCenterOffset, 101)
@@ -223,7 +223,7 @@ TestCase {
         Logic.cardSlots[1].aboveMe = null;
     }
 
-    function test_cardReadyToAnchor_overAnAceSlot()
+    function test_cardReadyToAnchor_overAnAceSlotInFathersSolitaire()
     {
         var slot = Logic.cardSlots[10];
         slot.x = 450;
@@ -231,14 +231,18 @@ TestCase {
         slot.isAceSlot = true;
         Logic.deck[51].x = 450;
         Logic.deck[51].y = 450;
-        compare(Logic.cardReadyToAnchor(51, false), false)
+        Logic.rules = 1; //Father's solitaire
+        compare(Logic.cardReadyToAnchor(51, true), false)
         compare(Logic.deck[51].anchors.centerIn, null)
         Logic.deck[0].x = 450;
         Logic.deck[0].y = 450;
-        compare(Logic.cardReadyToAnchor(0, false), true)
+        compare(Logic.cardReadyToAnchor(0, true), true)
         compare(Logic.deck[0].anchors.centerIn, slot)
         compare(Logic.deck[0].anchors.verticalCenterOffset, 0)
         Logic.cardSlots[10].aboveMe = null;
+        compare(Logic.cardReadyToAnchor(51, false), true)
+        Logic.cardSlots[10].aboveMe = null;
+        Logic.rules = 0;
     }
 
     function test_cardReadyToAnchor_overACardOverASlot()
@@ -291,9 +295,10 @@ TestCase {
         compare(Logic.deck[39].z, Logic.deck[17].z+1)
     }
 
-    function test_startFreeRange() {
+    function test_startFathersSolitaire() {
         Logic.startFathersSolitaire();
         compare(Logic.cardSlots[0].aboveMe, Logic.deck[0])
         compare(Logic.cardSlots[6].aboveMe, Logic.deck[45])
+        compare(Logic.rules, 1)
     }
 }
