@@ -6,6 +6,7 @@ var firstRowY = 5;
 var firstGameAreaRowY = 150;
 var firstColumnX = 30;
 var deltaX = 110;
+var cardSpacing = 29;
 var rules = 0;
 
 function startFathersSolitaire() {
@@ -288,10 +289,10 @@ function cardReadyToAnchor(cardIndex, applyRuling)
     {
         // First try card slots
         var compareSlot = cardSlots[slotLoopIndex];
-        if( (compareSlot.x <= cardToAnchor.x) &&
-            (cardToAnchor.x < (compareSlot.x + compareSlot.width)) &&
-            (compareSlot.y <= cardToAnchor.y) &&
-            (cardToAnchor.y < (compareSlot.y + compareSlot.height)) )
+        if( ((compareSlot.x-cardSpacing) < cardToAnchor.x) &&
+            (cardToAnchor.x < (compareSlot.x + cardSpacing)) &&
+            ((compareSlot.y-cardSpacing) < cardToAnchor.y) &&
+            (cardToAnchor.y < (compareSlot.y + cardSpacing)) )
         {
             selectedCard = compareSlot;
             isSlot = true;
@@ -301,11 +302,12 @@ function cardReadyToAnchor(cardIndex, applyRuling)
     for( var cardLoopIndex = 0 ; cardLoopIndex < 52 ; cardLoopIndex++ )
     {
         var compareCard = deck[cardLoopIndex];
-        // Reject exactly same coordinates to avoid loop reference
-        if( (compareCard.x < cardToAnchor.x) &&
-            (cardToAnchor.x < (compareCard.x + compareCard.width)) &&
-            (compareCard.y < cardToAnchor.y) &&
-            (cardToAnchor.y < (compareCard.y + compareCard.height)) )
+        // Check for same card anchoring to avoid loop reference
+        if( (compareCard !== cardToAnchor) &&
+            ((compareCard.x-cardSpacing) < cardToAnchor.x) &&
+            (cardToAnchor.x < (compareCard.x + cardSpacing)) &&
+            ((compareCard.y-cardSpacing) < cardToAnchor.y) &&
+            (cardToAnchor.y < (compareCard.y + cardSpacing)) )
         {
             if( selectedCard === undefined )
             {
