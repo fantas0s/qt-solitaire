@@ -18,5 +18,6 @@
         <file>images/napoleons_grave.png</file>
         <file>images/pyramid_solitaire.png</file>
         <file>images/the_clock.png</file>
+        <file>images/black_red.png</file>
     </qresource>
 </RCC>

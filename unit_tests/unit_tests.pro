@@ -10,4 +10,5 @@ DISTFILES += \
     tst_CardSlot.qml \
     tst_Card.qml \
     tst_Desk.qml \
-    tst_GameChooser.qml
+    tst_GameChooser.qml \
+    tst_GameChooseModel.qml

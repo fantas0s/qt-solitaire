@@ -4,14 +4,14 @@ Column {
     id: _delegateRoot
     scale: PathView.itemScale
     z: PathView.itemZ
-    signal gameSelected(string name)
+    signal gameSelected(string gameId)
     Image {
         id: _solitaireImage
         source: imageFile
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                _chooserRoot.gameSelected(solitaireName)
+                _chooserRoot.gameSelected(solitaireId)
             }
         }
     }

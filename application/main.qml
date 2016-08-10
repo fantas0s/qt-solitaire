@@ -16,8 +16,7 @@ Window {
         anchors.fill: parent
         visible: true
         onGameSelected: {
-            console.log("YES", gameName)
-            if( mainObject.startGame(gameName) )
+            if( mainObject.startGame(gameId) )
             {
                 mainObject.visible = true;
                 chooser.visible = false;

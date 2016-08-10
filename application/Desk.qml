@@ -3,8 +3,8 @@ import "logic.js" as Logic
 
 Rectangle {
     color: "green"
-    function startGame(gameName) {
-        if( gameName === "Father's Solitaire" )
+    function startGame(gameId) {
+        if( gameId === "fathersSolitaire" )
         {
             Logic.startFathersSolitaire();
             return true;
