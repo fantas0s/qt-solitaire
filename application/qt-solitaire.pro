@@ -19,5 +19,5 @@ include(deployment.pri)
 
 DISTFILES +=
 
-TRANSLATIONS = qt-solitaire_en.ts \
-               qt-solitaire_fi.ts
+TRANSLATIONS = translations/texts_en.ts \
+               translations/texts_fi.ts
