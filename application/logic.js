@@ -1,5 +1,6 @@
 var deck = new Array(52);
 var cardSlots = new Array(11);
+var slotCount = 0;
 var cardSeparator = 30;
 var faceDownCardSeparator = 5;
 var firstRowY = 5;
@@ -10,7 +11,7 @@ var cardSpacing = 29;
 var rules = 0;
 
 function startFathersSolitaire() {
-    createDeck();
+    resetDeck();
     shuffleDeck();
     createSlotsForFathersSolitaire();
     var index = 0;
@@ -56,6 +57,7 @@ function createDeck() {
                 createCard(component, suite, number);
             }
         }
+        resetDeck();
     }
     else if (component.status === Component.Error) {
         console.log("Error: ");
@@ -82,12 +84,24 @@ function createCard(component, suite, number)
     }
 
     var newObject = component.createObject(mainObject);
-    newObject.x = firstColumnX;
-    newObject.y = firstRowY;
     newObject.myNumber = number+1;
     newObject.mySuite = suiteText;
     newObject.myId = toIndex(suite,number);
     deck[newObject.myId] = newObject;
+}
+
+function resetDeck()
+{
+    for( var index = 0 ; index < 52 ; index++ ) {
+        var cardToReset = deck[index];
+        cardToReset.x = firstColumnX;
+        cardToReset.y = firstRowY;
+        cardToReset.z = 10+index;
+        cardToReset.aboveMe = null;
+        cardToReset.belowMe = null;
+        cardToReset.anchors.centerIn = null;
+        cardToReset.faceDown = true;
+    }
 }
 
 function shuffleDeck()
@@ -104,30 +118,48 @@ function shuffleDeck()
     }
 }
 
-function createSlotsForFathersSolitaire()
+function deleteSlots()
+{
+    for( var index = 0 ; index < slotCount ; index++ )
+    {
+        cardSlots[index].destroy();
+        cardSlots[index] = null;
+    }
+    slotCount = 0;
+}
+
+function createSlots(count)
 {
     var component = Qt.createComponent("CardSlot.qml");
     if (component.status === Component.Ready)
     {
-        for( var index = 0 ; index < 7 ; index++ ) {
-            var newObject = component.createObject(mainObject);
-            newObject.x = firstColumnX + (index * deltaX);
-            newObject.y = firstGameAreaRowY;
-            newObject.z = 1;
-            cardSlots[index] = newObject;
+        for( var index = 0 ; index < count ; index++ ) {
+            cardSlots[index] = component.createObject(mainObject);
         }
-        for( index = 0 ; index < 4 ; index++ ) {
-            newObject = component.createObject(mainObject);
-            newObject.x = firstColumnX + (index * deltaX);
-            newObject.y = firstRowY;
-            newObject.z = 54;
-            newObject.isAceSlot = true;
-            cardSlots[index+7] = newObject;
-        }
+        slotCount = count;
     }
     else if (component.status === Component.Error) {
         console.log("Error: ");
         console.log(component.errorString() );
+    }
+}
+
+function createSlotsForFathersSolitaire()
+{
+    createSlots(11);
+    if( slotCount === 11 )
+    {
+        for( var index = 0 ; index < 7 ; index++ ) {
+            cardSlots[index].x = firstColumnX + (index * deltaX);
+            cardSlots[index].y = firstGameAreaRowY;
+            cardSlots[index].z = 1;
+        }
+        for( index = 0 ; index < 4 ; index++ ) {
+            cardSlots[index+7].x = firstColumnX + (index * deltaX);
+            cardSlots[index+7].y = firstRowY;
+            cardSlots[index+7].z = 54;
+            cardSlots[index+7].isAceSlot = true;
+        }
     }
 }
 

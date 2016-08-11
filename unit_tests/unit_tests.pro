@@ -11,4 +11,5 @@ DISTFILES += \
     tst_Card.qml \
     tst_Desk.qml \
     tst_GameChooser.qml \
-    tst_GameChooseModel.qml
+    tst_GameChooseModel.qml \
+    tst_GameMenu.qml

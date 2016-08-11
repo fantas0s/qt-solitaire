@@ -6,6 +6,7 @@ Rectangle {
     function startGame(gameId) {
         if( gameId === "fathersSolitaire" )
         {
+            Logic.deleteSlots();
             Logic.startFathersSolitaire();
             return true;
         }
@@ -13,5 +14,8 @@ Rectangle {
     }
     function cardReadyToAnchor(index, applyRuling) {
         return Logic.cardReadyToAnchor(index, applyRuling);
+    }
+    Component.onCompleted: {
+        Logic.createDeck();
     }
 }

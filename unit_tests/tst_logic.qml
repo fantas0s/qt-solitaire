@@ -78,6 +78,7 @@ TestCase {
 
     function test_3_createSlots() {
         // Already created in init_data()
+        compare(Logic.slotCount, 11);
         compare(Logic.cardSlots[0].x, Logic.firstColumnX);
         compare(Logic.cardSlots[0].y, Logic.firstGameAreaRowY);
         compare(Logic.cardSlots[0].isAceSlot, false);
@@ -90,6 +91,28 @@ TestCase {
         compare(Logic.cardSlots[10].x, Logic.firstColumnX+(3*Logic.deltaX));
         compare(Logic.cardSlots[10].y, Logic.firstRowY);
         compare(Logic.cardSlots[10].isAceSlot, true);
+    }
+
+    function test_4_deleteSlots() {
+        // Slots created in init_data()
+        Logic.deleteSlots();
+        compare(Logic.slotCount, 0);
+        compare(Logic.cardSlots[0], null);
+        compare(Logic.cardSlots[10], null);
+    }
+
+    function test_5_resetDeck() {
+        // Deck created in init_data()
+        Logic.resetDeck();
+        for( var index = 0 ; index < 52 ; index++ ) {
+            var cardToCheck = Logic.deck[index];
+            compare(cardToCheck.x, Logic.firstColumnX);
+            compare(cardToCheck.y, Logic.firstRowY);
+            compare(cardToCheck.z, 10+index);
+            compare(cardToCheck.aboveMe, null);
+            compare(cardToCheck.belowMe, null);
+            compare(cardToCheck.anchors.centerIn, null);
+        }
     }
 
     function test_anchorCardOverOther() {
