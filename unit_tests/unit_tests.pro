@@ -2,7 +2,8 @@ TEMPLATE = app
 TARGET = tst_qt-solitaire
 CONFIG += warn_on qmltestcase
 SOURCES += \
-    tst_qt-solitaire.cpp
+    tst_qt-solitaire.cpp \
+    ../application/languageselector.cpp
 
 DISTFILES += \
     tst_Suiteicon.qml \
@@ -13,3 +14,6 @@ DISTFILES += \
     tst_GameChooser.qml \
     tst_GameChooseModel.qml \
     tst_GameMenu.qml
+
+HEADERS += \
+    ../application/languageselector.h
