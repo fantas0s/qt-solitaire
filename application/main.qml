@@ -8,24 +8,14 @@ Window {
     width: 800
     height: 480
 
-    LanguageSelector {
-        id: languageSetter
-        Component.onCompleted: {
-            stack.visible = true;
-        }
-        onBindingStringChanged: {
-            menuButton.text = qsTr("TR_Menu");
-        }
-    }
-
     StackView {
         id: stack
-        visible: false
         anchors.fill: parent
         initialItem: mainObject
         Component.onCompleted: {
             stack.push(chooser)
             mainMenu.newGameAvailable = false;
+            LanguageSelector.languageChange("en");
         }
         Desk {
             id: mainObject
@@ -46,7 +36,7 @@ Window {
         id: menuButton
         anchors.right: parent.right
         anchors.top: parent.top
-        text: qsTr("TR_Menu")
+        text: qsTr("TR_Menu") + LanguageSelector.bindingString
         onClicked: {
             mainMenu.popup();
         }
@@ -58,7 +48,7 @@ Window {
             stack.push(chooser);
         }
         onLanguageChanged: {
-            languageSetter.languageChange(language)
+            LanguageSelector.languageChange(language)
         }
     }
 }

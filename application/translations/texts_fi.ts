@@ -32,27 +32,27 @@
 <context>
     <name>GameMenu</name>
     <message>
-        <location filename="../GameMenu.qml" line="9"/>
+        <location filename="../GameMenu.qml" line="10"/>
         <source>TR_Menu</source>
         <translation>Valikko</translation>
     </message>
     <message>
-        <location filename="../GameMenu.qml" line="11"/>
+        <location filename="../GameMenu.qml" line="12"/>
         <source>TR_Start New Game</source>
         <translation>Uusi peli</translation>
     </message>
     <message>
-        <location filename="../GameMenu.qml" line="17"/>
+        <location filename="../GameMenu.qml" line="18"/>
         <source>TR_Language</source>
         <translation>Kieli</translation>
     </message>
     <message>
-        <location filename="../GameMenu.qml" line="19"/>
+        <location filename="../GameMenu.qml" line="20"/>
         <source>TR_English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../GameMenu.qml" line="23"/>
+        <location filename="../GameMenu.qml" line="24"/>
         <source>TR_Finnish</source>
         <translation>Suomi</translation>
     </message>
@@ -60,7 +60,7 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.qml" line="38"/>
+        <location filename="../main.qml" line="39"/>
         <source>TR_Menu</source>
         <translation>Valikko</translation>
     </message>

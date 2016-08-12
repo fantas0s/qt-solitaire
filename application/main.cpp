@@ -5,7 +5,8 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    qmlRegisterType<LanguageSelector>("qtsolitaire.languageselector", 1, 0, "LanguageSelector");
+
+    qmlRegisterSingletonType<LanguageSelector>("qtsolitaire.languageselector", 1, 0, "LanguageSelector", LanguageSelector::languageSelectorProvider);
 
     QQmlApplicationEngine* engine = new QQmlApplicationEngine(&app);
     engine->load(QUrl(QStringLiteral("qrc:/main.qml")));
