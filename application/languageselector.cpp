@@ -2,15 +2,11 @@
 #include <QTranslator>
 #include <QtGui>
 #include <QQmlEngine>
-#include <QDebug>
 
-int calls = 0;
-int constructorcalls = 0;
+LanguageSelector* LanguageSelector::instance = Q_NULLPTR;
 
 LanguageSelector::LanguageSelector()
 {
-    constructorcalls++;
-    qDebug() << "constructor," << constructorcalls << "calls.";
     myTranslator = new QTranslator();
     myTranslator->load("texts_en");
     qApp->installTranslator(myTranslator);
@@ -33,7 +29,7 @@ QObject* LanguageSelector::languageSelectorProvider(QQmlEngine* engine, QJSEngin
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
-    calls++;
-    qDebug() << "new object requested," << calls << "calls.";
-    return new LanguageSelector();
+    if( !instance )
+        instance = new LanguageSelector();
+    return instance;
 }

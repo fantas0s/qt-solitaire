@@ -3,7 +3,8 @@ TARGET = tst_qt-solitaire
 CONFIG += warn_on qmltestcase
 SOURCES += \
     tst_qt-solitaire.cpp \
-    ../application/languageselector.cpp
+    ../application/languageselector.cpp \
+    languageselectorut.cpp
 
 DISTFILES += \
     tst_Suiteicon.qml \
@@ -16,4 +17,5 @@ DISTFILES += \
     tst_GameMenu.qml
 
 HEADERS += \
-    ../application/languageselector.h
+    ../application/languageselector.h \
+    languageselectorut.h
