@@ -15,8 +15,8 @@ DISTFILES += \
     tst_Card.qml \
     tst_Desk.qml \
     tst_GameChooser.qml \
-    tst_GameChooseModel.qml \
-    tst_GameMenu.qml
+    tst_GameMenu.qml \
+    tst_GameListModel.qml
 
 HEADERS += \
     ../application/languageselector.h \

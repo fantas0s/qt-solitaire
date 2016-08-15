@@ -4,7 +4,7 @@ import "../application"
 import qtsolitaire.gamelistmodel 1.0
 
 TestCase {
-    name: "GameChooseModelTests"
+    name: "GameListModelTests"
     width: 800
     height: 480
     when: windowShown
