@@ -19,7 +19,6 @@ private:
     LanguageSelector();
     Q_OBJECT
     Q_PROPERTY(QString bindingString READ getBindingString NOTIFY bindingStringChanged)
-    QString bindingString;
     QTranslator* myTranslator;
     static LanguageSelector* instance;
 };

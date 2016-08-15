@@ -4,7 +4,8 @@ CONFIG += warn_on qmltestcase
 SOURCES += \
     tst_qt-solitaire.cpp \
     ../application/languageselector.cpp \
-    languageselectorut.cpp
+    languageselectorut.cpp \
+    gamelistmodelut.cpp
 
 DISTFILES += \
     tst_Suiteicon.qml \
@@ -18,4 +19,5 @@ DISTFILES += \
 
 HEADERS += \
     ../application/languageselector.h \
-    languageselectorut.h
+    languageselectorut.h \
+    gamelistmodelut.h

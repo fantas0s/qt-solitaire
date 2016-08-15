@@ -14,7 +14,7 @@ LanguageSelector::LanguageSelector()
 
 QString LanguageSelector::getBindingString()
 {
-    return bindingString;
+    return QString("");
 }
 
 void LanguageSelector::languageChange(QString language)

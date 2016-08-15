@@ -10,6 +10,8 @@ public:
 private Q_SLOTS:
     void init();
     void cleanup();
-    void testCallBack();
+    void callBack();
+    void getString();
+    void bindingStringChanged();
 };
 #endif // LANGUAGESELECTORUT_H
