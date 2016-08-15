@@ -3,7 +3,8 @@ TEMPLATE = app
 QT += qml quick
 
 SOURCES += main.cpp \
-    languageselector.cpp
+    languageselector.cpp \
+    gamelistmodel.cpp
 
 lupdate_only{
 SOURCES += *.qml \
@@ -24,4 +25,5 @@ TRANSLATIONS += translations/texts_en.ts \
                translations/texts_fi.ts
 
 HEADERS += \
-    languageselector.h
+    languageselector.h \
+    gamelistmodel.h

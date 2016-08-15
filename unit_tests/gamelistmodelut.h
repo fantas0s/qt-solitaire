@@ -10,7 +10,11 @@ public:
 private Q_SLOTS:
     void init();
     void cleanup();
-    void createDelete();
+    void rowCount();
+    void columnCount();
+    void index();
+    void parent();
+    void data();
 };
 
 #endif // GAMELISTMODELUT_H

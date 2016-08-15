@@ -5,7 +5,8 @@ SOURCES += \
     tst_qt-solitaire.cpp \
     ../application/languageselector.cpp \
     languageselectorut.cpp \
-    gamelistmodelut.cpp
+    gamelistmodelut.cpp \
+    ../application/gamelistmodel.cpp
 
 DISTFILES += \
     tst_Suiteicon.qml \
@@ -20,4 +21,5 @@ DISTFILES += \
 HEADERS += \
     ../application/languageselector.h \
     languageselectorut.h \
-    gamelistmodelut.h
+    gamelistmodelut.h \
+    ../application/gamelistmodel.h
