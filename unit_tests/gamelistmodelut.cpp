@@ -1,6 +1,7 @@
 #include "gamelistmodelut.h"
 #include "../application/gamelistmodel.h"
 #include <QtTest>
+#include <QSignalSpy>
 
 static const int numOfGames = 5;
 static const int numberOfColumnsInOneColumnList = 1;
@@ -93,5 +94,18 @@ void GameListModelUT::roleNames()
     QCOMPARE(roles.value((int)GameListModel::SolitaireImageUriRole), QByteArray("imageFile"));
     QCOMPARE(roles.value((int)GameListModel::SolitaireNameRole), QByteArray("solitaireName"));
     QCOMPARE(roles.value((int)GameListModel::SolitareIdRole), QByteArray("solitaireId"));
+    delete listModel;
+}
+
+void GameListModelUT::testForceUpdate()
+{
+    GameListModel* listModel = new GameListModel();
+    QObject::connect(this, &updateTrigger,
+                     listModel, &listModel->forceUpdate);
+    QAbstractItemModel* itemModel = qobject_cast<QAbstractItemModel*>(listModel);
+    QSignalSpy spy(itemModel, SIGNAL(dataChanged(const QModelIndex, const QModelIndex, const QVector<int>&)));
+    QCOMPARE(spy.count(), 0);
+    emit updateTrigger();
+    QCOMPARE(spy.count(), 1);
     delete listModel;
 }

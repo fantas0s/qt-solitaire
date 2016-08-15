@@ -6,7 +6,8 @@ class GameListModelUT : public QObject
     Q_OBJECT
 public:
     GameListModelUT();
-
+signals:
+    void updateTrigger();
 private Q_SLOTS:
     void init();
     void cleanup();
@@ -16,6 +17,7 @@ private Q_SLOTS:
     void parent();
     void data();
     void roleNames();
+    void testForceUpdate();
 };
 
 #endif // GAMELISTMODELUT_H

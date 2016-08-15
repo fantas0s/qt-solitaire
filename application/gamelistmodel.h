@@ -17,7 +17,10 @@ public:
     Q_INVOKABLE int columnCount(const QModelIndex &parent = QModelIndex()) const;
     Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QHash<int, QByteArray> roleNames() const;
+public slots:
+    void forceUpdate();
 private:
+    Q_OBJECT
     QVariant getSolitaireName(const int row) const;
 };
 

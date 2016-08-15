@@ -2,29 +2,38 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>GameChooseModel</name>
+    <name>GameChooser</name>
     <message>
-        <location filename="../GameChooseModel.qml" line="6"/>
+        <location filename="../GameChooser.qml" line="11"/>
+        <source>TR_DummyBinding</source>
+        <translatorcomment>Never visible to user</translatorcomment>
+        <translation>Fake</translation>
+    </message>
+</context>
+<context>
+    <name>GameListModel</name>
+    <message>
+        <location filename="../gamelistmodel.cpp" line="59"/>
         <source>TR_Father&apos;s Solitaire</source>
         <translation>Father&apos;s Solitaire</translation>
     </message>
     <message>
-        <location filename="../GameChooseModel.qml" line="11"/>
+        <location filename="../gamelistmodel.cpp" line="61"/>
         <source>TR_Pyramid</source>
         <translation>Pyramid</translation>
     </message>
     <message>
-        <location filename="../GameChooseModel.qml" line="16"/>
+        <location filename="../gamelistmodel.cpp" line="63"/>
         <source>TR_Napoleon&apos;s Grave</source>
         <translation>Napoleon&apos;s Grave</translation>
     </message>
     <message>
-        <location filename="../GameChooseModel.qml" line="21"/>
+        <location filename="../gamelistmodel.cpp" line="65"/>
         <source>TR_The Clock</source>
         <translation>The Clock</translation>
     </message>
     <message>
-        <location filename="../GameChooseModel.qml" line="26"/>
+        <location filename="../gamelistmodel.cpp" line="67"/>
         <source>TR_Classic Black And Red</source>
         <translation>Classic Solitaire</translation>
     </message>

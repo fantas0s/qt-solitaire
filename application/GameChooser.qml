@@ -1,14 +1,23 @@
 import QtQuick 2.2
 import qtsolitaire.gamelistmodel 1.0
+import qtsolitaire.languageselector 1.0
 
 Rectangle {
     id: _chooserRoot
     color: "green"
     signal gameSelected(string gameId)
+    GameListModel {
+        id: _model
+        property string languageDummy: qsTr("TR_DummyBinding") + LanguageSelector.bindingString
+        onLanguageDummyChanged: {
+            console.log("HEP!");
+            forceUpdate();
+        }
+    }
     PathView {
         id: _view
         anchors.fill: parent
-        model: GameListModel {}
+        model:_model
         delegate: GameChooseDelegate {}
         path: Path {
             startX: 400

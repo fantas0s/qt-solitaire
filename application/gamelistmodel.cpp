@@ -1,4 +1,5 @@
 #include "gamelistmodel.h"
+#include <QDebug>
 
 #define NUM_OF_GAMES   5
 
@@ -67,7 +68,6 @@ QVariant GameListModel::getSolitaireName(const int row) const
     }
 }
 
-
 QVariant GameListModel::data(const QModelIndex &index, int role) const
 {
     if( hasIndex(index.row(), index.column()) )
@@ -94,4 +94,10 @@ QHash<int, QByteArray> GameListModel::roleNames() const
     roles[SolitareIdRole] = "solitaireId";
     roles[SolitaireImageUriRole] = "imageFile";
     return roles;
+}
+
+void GameListModel::forceUpdate()
+{
+    emit dataChanged(index(0,0),index(NUM_OF_GAMES-1,0));
+    qDebug() << "HOP";
 }
