@@ -15,6 +15,7 @@ private Q_SLOTS:
     void index();
     void parent();
     void data();
+    void roleNames();
 };
 
 #endif // GAMELISTMODELUT_H

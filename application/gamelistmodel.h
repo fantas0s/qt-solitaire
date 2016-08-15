@@ -5,9 +5,9 @@ class GameListModel : public QAbstractItemModel
 {
 public:
     enum {
-        SolitaireNameRole = Qt::DisplayRole+1,
-        SolitaireImageUriRole = Qt::DisplayRole+2,
-        SolitareIdRole = Qt::DisplayRole+3
+        SolitaireNameRole = Qt::UserRole+1,
+        SolitaireImageUriRole = Qt::UserRole+2,
+        SolitareIdRole = Qt::UserRole+3
     };
     GameListModel();
     Q_INVOKABLE QModelIndex index(int row, int column,
@@ -16,6 +16,7 @@ public:
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
     Q_INVOKABLE int columnCount(const QModelIndex &parent = QModelIndex()) const;
     Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QHash<int, QByteArray> roleNames() const;
 private:
     QVariant getSolitaireName(const int row) const;
 };

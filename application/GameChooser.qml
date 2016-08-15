@@ -1,4 +1,5 @@
 import QtQuick 2.2
+import qtsolitaire.gamelistmodel 1.0
 
 Rectangle {
     id: _chooserRoot
@@ -7,7 +8,7 @@ Rectangle {
     PathView {
         id: _view
         anchors.fill: parent
-        model: GameChooseModel {}
+        model: GameListModel {}
         delegate: GameChooseDelegate {}
         path: Path {
             startX: 400

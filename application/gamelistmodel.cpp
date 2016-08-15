@@ -7,7 +7,7 @@ const QString solitaireIds[NUM_OF_GAMES] = {
     "pyramid",
     "napoleon",
     "clock",
-    "blackred"
+    "blackRed"
 };
 
 const QString imageFileUris[NUM_OF_GAMES] = {
@@ -85,4 +85,13 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
         }
     }
     return QVariant();
+}
+
+QHash<int, QByteArray> GameListModel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+    roles[SolitaireNameRole] = "solitaireName";
+    roles[SolitareIdRole] = "solitaireId";
+    roles[SolitaireImageUriRole] = "imageFile";
+    return roles;
 }
