@@ -192,8 +192,8 @@ TestCase {
 
     function test_cardReadyToAnchor_overFirstCard()
     {
-        var xDiff = (Logic.deltaX - Logic.deck[0].width) - 1;
-        var yDiff = Logic.cardSeparator-1;
+        var xDiff = (Logic.deltaX - Logic.deck[0].width) + 1;
+        var yDiff = Logic.cardSeparator+1;
         Logic.deck[0].x = 400;
         Logic.deck[0].y = 400;
         Logic.deck[51].x = Logic.deck[0].x-xDiff+1;
@@ -223,8 +223,8 @@ TestCase {
 
     function test_cardReadyToAnchor_notOverAnyCard()
     {
-        var xDiff = (Logic.deltaX - Logic.deck[0].width) - 1;
-        var yDiff = Logic.cardSeparator-1;
+        var xDiff = (Logic.deltaX - Logic.deck[0].width) + 1;
+        var yDiff = Logic.cardSeparator+1;
         Logic.deck[13].x = 390;
         Logic.deck[13].y = 390;
         Logic.deck[42].x = 390-xDiff;
@@ -242,8 +242,8 @@ TestCase {
 
     function test_cardReadyToAnchor_overASlot()
     {
-        var xDiff = (Logic.deltaX - Logic.deck[0].width) - 1;
-        var yDiff = Logic.cardSeparator-1;
+        var xDiff = (Logic.deltaX - Logic.deck[0].width) + 1;
+        var yDiff = Logic.cardSeparator+1;
         var slot = Logic.cardSlots[1];
         slot.x = 450;
         slot.y = 450;
@@ -260,6 +260,23 @@ TestCase {
         compare(Logic.deck[51].anchors.verticalCenterOffset, 0)
         Logic.deck[51].anchors.centerIn = undefined;
         Logic.cardSlots[1].aboveMe = null;
+    }
+
+    function test_cardReadyToAnchor_overFaceDownCardInFathersSolitaire()
+    {
+        Logic.deck[50].x = 450;
+        Logic.deck[50].y = 450;
+        Logic.deck[50].faceDown = false;
+        Logic.deck[51].x = 450;
+        Logic.deck[51].y = 450;
+        Logic.deck[51].faceDown = true;
+        Logic.rules = 1; //Father's solitaire
+        compare(Logic.cardReadyToAnchor(50, true), false)
+        Logic.deck[51].faceDown = false;
+        compare(Logic.cardReadyToAnchor(50, true), true)
+        Logic.deck[50].anchors.centerIn = null;
+        Logic.deck[50].belowMe = null;
+        Logic.deck[51].aboveMe = null;
     }
 
     function test_cardReadyToAnchor_overAnAceSlotInFathersSolitaire()
@@ -304,8 +321,8 @@ TestCase {
 
     function test_cardReadyToAnchor_notOverAnySlot()
     {
-        var xDiff = (Logic.deltaX - Logic.deck[0].width) - 1;
-        var yDiff = Logic.cardSeparator-1;
+        var xDiff = (Logic.deltaX - Logic.deck[0].width) + 1;
+        var yDiff = Logic.cardSeparator+1;
         var slot = Logic.cardSlots[10];
         Logic.deck[42].x = slot.x;
         Logic.deck[42].y = slot.y-yDiff;

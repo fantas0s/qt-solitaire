@@ -41,13 +41,11 @@ MouseArea {
                  (y === storedY)) ||
                 ( false === mainObject.cardReadyToAnchor(myId, true) ) )
             {
-                x = storedX+1;
-                y = storedY+1;
+                x = storedX;
+                y = storedY;
                 if( false === mainObject.cardReadyToAnchor(myId, false) )
                 {
                     console.log("Card was left to float at x:", x, " y:", y);
-                    x--;
-                    y--;
                 }
             }
         }

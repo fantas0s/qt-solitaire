@@ -7,7 +7,7 @@ var firstRowY = 5;
 var firstGameAreaRowY = 150;
 var firstColumnX = 30;
 var deltaX = 110;
-var cardSpacing = 29;
+var cardSpacing = 31;
 var rules = 0;
 
 function startFathersSolitaire() {
@@ -214,12 +214,14 @@ function anchorCardOverSlot(cardToAnchor, slotToUse, applyRuling)
 function cardIsOverAceSlot(cardObject)
 {
     var slot = cardObject.belowMe;
-    while( (slot.belowMe !== undefined) &&
+    while( slot &&
+           (slot.belowMe !== undefined) &&
            (slot.belowMe !== null) )
     {
         slot = slot.belowMe;
     }
-    if( slot.isAceSlot )
+    if( slot &&
+        slot.isAceSlot )
         return true;
     else
         return false;
