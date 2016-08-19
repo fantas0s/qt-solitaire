@@ -26,11 +26,11 @@ void GameStatsStorageUT::getInstance()
 {
     GameStatsStorage* storage = GameStatsStorage::getInstance();
     QVERIFY(storage);
+    QCOMPARE(storage, GameStatsStorage::instance);
     GameStatsStorage* storage2 = GameStatsStorage::getInstance();
     QCOMPARE(storage, storage2);
     storage->deleteInstance();
-    storage = GameStatsStorage::getInstance();
-    QVERIFY(storage != storage2);
+    QCOMPARE(GameStatsStorage::instance, (void*)Q_NULLPTR);
 }
 
 void GameStatsStorageUT::readDefaultValues()

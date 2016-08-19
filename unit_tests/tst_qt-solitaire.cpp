@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
     GameStatsStorageUT gssUT;
     cppUtReturnValue = QTest::qExec(&gssUT, argc, argv);
-    //if( cppUtReturnValue )
+    if( cppUtReturnValue )
         return cppUtReturnValue;
 
     qmlRegisterType<GameListModel>("qtsolitaire.gamelistmodel", 1, 0, "GameListModel");

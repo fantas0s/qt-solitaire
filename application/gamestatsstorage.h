@@ -4,6 +4,7 @@
 #include <QFile>
 class GameStatsStorage
 {
+    friend class GameStatsStorageUT;
 public:
     static GameStatsStorage* getInstance();
 #ifdef UNIT_TEST
