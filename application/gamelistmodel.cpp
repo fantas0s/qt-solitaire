@@ -99,5 +99,4 @@ QHash<int, QByteArray> GameListModel::roleNames() const
 void GameListModel::forceUpdate()
 {
     emit dataChanged(index(0,0),index(NUM_OF_GAMES-1,0));
-    qDebug() << "HOP";
 }

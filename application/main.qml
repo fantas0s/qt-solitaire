@@ -15,7 +15,6 @@ Window {
         Component.onCompleted: {
             stack.push(chooser)
             mainMenu.newGameAvailable = false;
-            LanguageSelector.languageChange("en");
         }
         Desk {
             id: mainObject

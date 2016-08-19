@@ -1,12 +1,15 @@
 TEMPLATE = app
 TARGET = tst_qt-solitaire
 CONFIG += warn_on qmltestcase
+DEFINES += UNIT_TEST
 SOURCES += \
     tst_qt-solitaire.cpp \
     ../application/languageselector.cpp \
     languageselectorut.cpp \
     gamelistmodelut.cpp \
-    ../application/gamelistmodel.cpp
+    ../application/gamelistmodel.cpp \
+    gamestatsstorageut.cpp \
+    ../application/gamestatsstorage.cpp
 
 DISTFILES += \
     tst_Suiteicon.qml \
@@ -22,4 +25,5 @@ HEADERS += \
     ../application/languageselector.h \
     languageselectorut.h \
     gamelistmodelut.h \
-    ../application/gamelistmodel.h
+    ../application/gamelistmodel.h \
+    gamestatsstorageut.h

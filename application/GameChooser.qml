@@ -10,7 +10,6 @@ Rectangle {
         id: _model
         property string languageDummy: qsTr("TR_DummyBinding") + LanguageSelector.bindingString
         onLanguageDummyChanged: {
-            console.log("HEP!");
             forceUpdate();
         }
     }

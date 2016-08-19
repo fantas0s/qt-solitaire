@@ -4,7 +4,8 @@ QT += qml quick
 
 SOURCES += main.cpp \
     languageselector.cpp \
-    gamelistmodel.cpp
+    gamelistmodel.cpp \
+    gamestatsstorage.cpp
 
 lupdate_only{
 SOURCES += *.qml \
@@ -26,4 +27,5 @@ TRANSLATIONS += translations/texts_en.ts \
 
 HEADERS += \
     languageselector.h \
-    gamelistmodel.h
+    gamelistmodel.h \
+    gamestatsstorage.h

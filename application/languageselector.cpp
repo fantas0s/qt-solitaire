@@ -2,14 +2,15 @@
 #include <QTranslator>
 #include <QtGui>
 #include <QQmlEngine>
+#include "gamestatsstorage.h"
 
 LanguageSelector* LanguageSelector::instance = Q_NULLPTR;
 
 LanguageSelector::LanguageSelector()
 {
+    GameStatsStorage* storage = GameStatsStorage::getInstance();
     myTranslator = new QTranslator();
-    myTranslator->load("texts_en");
-    qApp->installTranslator(myTranslator);
+    updateTranslator(storage->getLanguage());
 }
 
 QString LanguageSelector::getBindingString()
@@ -17,11 +18,18 @@ QString LanguageSelector::getBindingString()
     return QString("");
 }
 
+void LanguageSelector::updateTranslator(QString language)
+{
+    myTranslator->load(QString("texts_") + language);
+    qApp->installTranslator(myTranslator);
+}
+
 void LanguageSelector::languageChange(QString language)
 {
     qApp->removeTranslator(myTranslator);
-    myTranslator->load(QString("texts_") + language);
-    qApp->installTranslator(myTranslator);
+    updateTranslator(language);
+    GameStatsStorage* storage = GameStatsStorage::getInstance();
+    storage->setLanguage(language);
     emit bindingStringChanged();
 }
 

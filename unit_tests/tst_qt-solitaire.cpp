@@ -4,6 +4,8 @@
 #include "../application/gamelistmodel.h"
 #include "languageselectorut.h"
 #include "gamelistmodelut.h"
+#include "gamestatsstorageut.h"
+
 int main(int argc, char **argv)
 {
     QTEST_ADD_GPU_BLACKLIST_SUPPORT
@@ -16,6 +18,11 @@ int main(int argc, char **argv)
     GameListModelUT glmUT;
     cppUtReturnValue = QTest::qExec(&glmUT, argc, argv);
     if( cppUtReturnValue )
+        return cppUtReturnValue;
+
+    GameStatsStorageUT gssUT;
+    cppUtReturnValue = QTest::qExec(&gssUT, argc, argv);
+    //if( cppUtReturnValue )
         return cppUtReturnValue;
 
     qmlRegisterType<GameListModel>("qtsolitaire.gamelistmodel", 1, 0, "GameListModel");

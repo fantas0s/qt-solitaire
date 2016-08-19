@@ -3,6 +3,10 @@
 #include "languageselector.h"
 #include "gamelistmodel.h"
 
+#ifdef UNIT_TEST
+#error "Unit test compilation for application!!!"
+#endif
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
