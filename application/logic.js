@@ -330,7 +330,7 @@ function cardReadyToAnchor(cardIndex, applyRuling)
     {
         var compareCard = deck[cardLoopIndex];
         // Check for same card anchoring to avoid loop reference
-        if( (compareCard !== cardToAnchor) &&
+        if( (compareCard.z < cardToAnchor.z) &&
             ((compareCard.x-cardSpacing) < cardToAnchor.x) &&
             (cardToAnchor.x < (compareCard.x + cardSpacing)) &&
             ((compareCard.y-cardSpacing) < cardToAnchor.y) &&

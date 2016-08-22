@@ -262,13 +262,30 @@ TestCase {
         Logic.cardSlots[1].aboveMe = null;
     }
 
+    function test_cardReadyToAnchor_overHigherZ()
+    {
+        Logic.deck[50].x = 450;
+        Logic.deck[50].y = 450;
+        Logic.deck[50].z = 1000;
+        Logic.deck[50].faceDown = false;
+        Logic.deck[51].x = 450;
+        Logic.deck[51].y = 450;
+        Logic.deck[51].z = 1000;
+        Logic.deck[51].faceDown = false;
+        compare(Logic.cardReadyToAnchor(50, true), false)
+        Logic.deck[51].z = 1001;
+        compare(Logic.cardReadyToAnchor(50, true), false)
+    }
+
     function test_cardReadyToAnchor_overFaceDownCardInFathersSolitaire()
     {
         Logic.deck[50].x = 450;
         Logic.deck[50].y = 450;
+        Logic.deck[50].z = 1000;
         Logic.deck[50].faceDown = false;
         Logic.deck[51].x = 450;
         Logic.deck[51].y = 450;
+        Logic.deck[51].z = 45;
         Logic.deck[51].faceDown = true;
         Logic.rules = 1; //Father's solitaire
         compare(Logic.cardReadyToAnchor(50, true), false)
