@@ -14,14 +14,15 @@ function startFathersSolitaire() {
     resetDeck();
     shuffleDeck();
     createSlotsForFathersSolitaire();
-    var index = 0;
-    var xOrigin = firstColumnX;
     rules = 1;
+    dealFathersSolitaire();
+}
 
-    for( var column = 0 ; (column < 7) && (index < 52) ; column++ )
+function dealFathersSolitaire() {
+    var index = 0;
+    for( var round = 0 ; (round < 8) && (index < 52) ; round++ )
     {
-        var yOrigin = firstGameAreaRowY;
-        for( var round = 0 ; ((round < 7) || ((column < 3) && (round < 8))) && (index < 52) ; round++ )
+        for( var column = 0 ; (column < 7) && (index < 52) ; column++ )
         {
             if( round >= column )
             {
@@ -29,14 +30,7 @@ function startFathersSolitaire() {
             }
             if( round > 0 )
             {
-                if( deck[index-1].faceDown )
-                {
-                    anchorCardOverOther(deck[index], deck[index-1], false);
-                }
-                else
-                {
-                    anchorCardOverOther(deck[index], deck[index-1], false);
-                }
+                anchorCardOverOther(deck[index], deck[index-7], false);
             }
             else
             {
@@ -44,7 +38,6 @@ function startFathersSolitaire() {
             }
             index++;
         }
-        xOrigin += deltaX;
     }
 }
 

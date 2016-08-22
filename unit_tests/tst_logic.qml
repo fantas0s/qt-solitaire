@@ -359,7 +359,20 @@ TestCase {
     function test_startFathersSolitaire() {
         Logic.startFathersSolitaire();
         compare(Logic.cardSlots[0].aboveMe, Logic.deck[0])
-        compare(Logic.cardSlots[6].aboveMe, Logic.deck[45])
+        compare(Logic.deck[0].aboveMe, Logic.deck[7])
+        compare(Logic.deck[7].aboveMe, Logic.deck[14])
+        compare(Logic.deck[14].aboveMe, Logic.deck[21])
+        compare(Logic.deck[21].aboveMe, Logic.deck[28])
+        compare(Logic.deck[28].aboveMe, Logic.deck[35])
+        compare(Logic.deck[35].aboveMe, Logic.deck[42])
+        compare(Logic.deck[42].aboveMe, Logic.deck[49])
+        compare(Logic.cardSlots[6].aboveMe, Logic.deck[6])
+        compare(Logic.deck[6].aboveMe, Logic.deck[13])
+        compare(Logic.deck[13].aboveMe, Logic.deck[20])
+        compare(Logic.deck[20].aboveMe, Logic.deck[27])
+        compare(Logic.deck[27].aboveMe, Logic.deck[34])
+        compare(Logic.deck[34].aboveMe, Logic.deck[41])
+        compare(Logic.deck[41].aboveMe, Logic.deck[48])
         compare(Logic.rules, 1)
     }
 }
