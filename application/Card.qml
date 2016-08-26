@@ -35,6 +35,7 @@ MouseArea {
         }
     }
     onReleased: {
+        console.log("myId = ", myId);
         if( !faceDown )
         {
             if( ((x === storedX) &&
@@ -43,9 +44,12 @@ MouseArea {
             {
                 x = storedX;
                 y = storedY;
-                if( false === mainObject.cardReadyToAnchor(myId, false) )
+                if( false === mainObject.cardReadyToAnchor(myId, true) )
                 {
-                    console.log("Card was left to float at x:", x, " y:", y);
+                    if( false === mainObject.cardReadyToAnchor(myId, false) )
+                    {
+                        console.log("Card was left to float at x:", x, " y:", y);
+                    }
                 }
             }
         }

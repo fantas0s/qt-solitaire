@@ -4,9 +4,11 @@ import "../application/logic.js" as Logic
 import "../application"
 
 TestCase {
+    id: mainWindow
     name: "LogicTests"
     width: 800
     height: 480
+    property int menuButtonWidth: 80
 
     Card {
         id: cardForTesting
@@ -113,6 +115,20 @@ TestCase {
             compare(cardToCheck.belowMe, null);
             compare(cardToCheck.anchors.centerIn, null);
         }
+    }
+
+    function test_detachCard()
+    {
+        cardForTesting.aboveMe = cardForMatching;
+        cardForMatching.belowMe = cardForTesting;
+        cardForTesting.belowMe = yetAnotherCard;
+        yetAnotherCard.aboveMe = cardForTesting;
+        var cardReturned = Logic.detachCard(cardForTesting);
+        compare(cardReturned, cardForTesting);
+        compare(cardReturned.aboveMe, null);
+        compare(cardReturned.belowMe, null);
+        compare(cardForMatching.belowMe, yetAnotherCard);
+        compare(yetAnotherCard.aboveMe, cardForMatching);
     }
 
     function test_anchorCardOverOther() {
@@ -290,7 +306,7 @@ TestCase {
         Logic.deck[51].y = 450;
         Logic.deck[51].z = 45;
         Logic.deck[51].faceDown = true;
-        Logic.rules = 1; //Father's solitaire
+        Logic.selectedGame = "fathersSolitaire";
         compare(Logic.cardReadyToAnchor(50, true), false)
         Logic.deck[51].faceDown = false;
         compare(Logic.cardReadyToAnchor(50, true), true)
@@ -307,7 +323,7 @@ TestCase {
         slot.isAceSlot = true;
         Logic.deck[51].x = 450;
         Logic.deck[51].y = 450;
-        Logic.rules = 1; //Father's solitaire
+        Logic.selectedGame = "fathersSolitaire";
         compare(Logic.cardReadyToAnchor(51, true), false)
         compare(Logic.deck[51].anchors.centerIn, null)
         compare(Logic.cardReadyToAnchor(51, false), true)
@@ -321,7 +337,7 @@ TestCase {
         compare(Logic.deck[0].anchors.centerIn, slot)
         compare(Logic.deck[0].anchors.verticalCenterOffset, 0)
         Logic.cardSlots[10].aboveMe = null;
-        Logic.rules = 0;
+        Logic.selectedGame = "";
     }
 
     function test_cardReadyToAnchor_overACardOverASlot()
@@ -379,7 +395,7 @@ TestCase {
     }
 
     function test_startFathersSolitaire() {
-        Logic.startFathersSolitaire();
+        Logic.startGame("fathersSolitaire");
         compare(Logic.cardSlots[0].aboveMe, Logic.deck[0])
         compare(Logic.deck[0].aboveMe, Logic.deck[7])
         compare(Logic.deck[7].aboveMe, Logic.deck[14])
@@ -395,6 +411,48 @@ TestCase {
         compare(Logic.deck[27].aboveMe, Logic.deck[34])
         compare(Logic.deck[34].aboveMe, Logic.deck[41])
         compare(Logic.deck[41].aboveMe, Logic.deck[48])
-        compare(Logic.rules, 1)
+        compare(Logic.selectedGame, "fathersSolitaire")
+    }
+
+    function test_redealFathersSolitaire() {
+        Logic.startGame("fathersSolitaire");
+        var newLastCardSuite = Logic.deck[49].mySuite;
+        var newLastCardNumber = Logic.deck[49].myNumber;
+        var lastPileTopCardSuite = Logic.deck[41].mySuite;
+        var lastPileTopCardNumber = Logic.deck[41].myNumber;
+        Logic.redeal();
+        compare(Logic.deck[51].mySuite, newLastCardSuite);
+        compare(Logic.deck[51].myNumber, newLastCardNumber);
+        compare(Logic.deck[0].mySuite, lastPileTopCardSuite);
+        compare(Logic.deck[0].myNumber, lastPileTopCardNumber);
+    }
+
+    function test_redealFathersSolitaireWithAceSlots() {
+        Logic.selectedGame = "fathersSolitaire";
+        Logic.resetDeck();
+        Logic.createSlotsForFathersSolitaire();
+        compare(Logic.deck[0].mySuite, "diamond");
+        compare(Logic.deck[0].myNumber, 1);
+        Logic.deck[0].faceDown = false;
+        compare(Logic.deck[1].mySuite, "diamond");
+        compare(Logic.deck[1].myNumber, 2);
+        Logic.deck[1].faceDown = false;
+        compare(Logic.deck[2].mySuite, "diamond");
+        compare(Logic.deck[2].myNumber, 3);
+        Logic.deck[2].faceDown = false;
+        compare(Logic.anchorCardOverSlot(Logic.deck[0], Logic.cardSlots[7], true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[1], Logic.deck[0], true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[2], Logic.deck[1], true), true);
+        Logic.cardsToBypassWhenDealing = 3;
+        Logic.dealFathersSolitaire();
+        Logic.cardsToBypassWhenDealing = 0;
+        Logic.redeal();
+        compare(Logic.cardsToBypassWhenDealing, 3);
+        compare(Logic.deck[0].mySuite, "diamond");
+        compare(Logic.deck[0].myNumber, 3);
+        compare(Logic.deck[1].mySuite, "diamond");
+        compare(Logic.deck[1].myNumber, 2);
+        compare(Logic.deck[2].mySuite, "diamond");
+        compare(Logic.deck[2].myNumber, 1);
     }
 }

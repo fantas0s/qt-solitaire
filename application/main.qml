@@ -4,9 +4,11 @@ import QtQuick.Controls 1.4
 import qtsolitaire.languageselector 1.0
 
 Window {
+    id: mainWindow
     visible:true
     width: 800
     height: 480
+    property int menuButtonWidth: menuButton.width
 
     StackView {
         id: stack

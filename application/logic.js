@@ -9,18 +9,108 @@ var firstColumnX = 30;
 var deltaX = 110;
 var allowedCardOffsetX = 54; // half of card width (80/2) + half of (deltaX - cardwidth) ((110-80)/2) - 1.
 var allowedCardOffsetY = 74; // half of card height (120/2) + half of cardSeparator (30/2) - 1.
-var rules = 0;
+var selectedGame = "none";
+var cardsToBypassWhenDealing = 0;
 
-function startFathersSolitaire() {
+function startGame(gameId) {
+    selectedGame = gameId;
     resetDeck();
-    shuffleDeck();
-    createSlotsForFathersSolitaire();
-    rules = 1;
+    if( "fathersSolitaire" === selectedGame )
+    {
+        shuffleDeck();
+        createSlotsForFathersSolitaire();
+        dealFathersSolitaire();
+        return true;
+    }
+    return false;
+}
+
+function redeal()
+{
+    if( "fathersSolitaire" === selectedGame )
+    {
+        reDealFathersSolitaire();
+    }
+}
+
+function reDealFathersSolitaire()
+{
+    var deckIndex = 51;
+    var slotIndex;
+    for( slotIndex = 0 ; slotIndex < 7 ; slotIndex++ )
+    {
+        if( cardSlots[slotIndex].aboveMe )
+        {
+            var faceUpCardPtr = cardSlots[slotIndex].aboveMe;
+            while( faceUpCardPtr.aboveMe )
+            {
+                faceUpCardPtr = faceUpCardPtr.aboveMe;
+            }
+            // Now on topmost card
+            while( faceUpCardPtr.belowMe &&
+                   (!faceUpCardPtr.faceDown) )
+            {
+                var cardToDetach = faceUpCardPtr;
+                faceUpCardPtr = faceUpCardPtr.belowMe;
+                deck[deckIndex] = detachCard(cardToDetach);
+                deck[deckIndex].faceDown = true;
+                deckIndex--;
+            }
+            // Now either on slot or on topmost face-down card.
+        }
+    }
+    // All face-up cards have been collected.
+    for( slotIndex = 0 ; slotIndex < 7 ; slotIndex++ )
+    {
+        var faceDownCardPtr = cardSlots[slotIndex].aboveMe;
+        while( faceDownCardPtr )
+        {
+            var faceDownCardToDetach = faceDownCardPtr;
+            faceDownCardPtr = faceDownCardPtr.aboveMe;
+            deck[deckIndex] = detachCard(faceDownCardToDetach);
+            deckIndex--;
+        }
+    }
+    // deckIndex should be at -1 if all cards were gathered to deck.
+    cardsToBypassWhenDealing = deckIndex+1;
+    if( cardsToBypassWhenDealing )
+    {
+        //some cards were placed on ace slots already
+        for( slotIndex = 0 ; slotIndex < 4 ; slotIndex++ )
+        {
+            var aceSlotCardPtr = cardSlots[7+slotIndex].aboveMe;
+            while( aceSlotCardPtr &&
+                   (deckIndex >= 0) )
+            {
+                deck[deckIndex] = aceSlotCardPtr;
+                aceSlotCardPtr = aceSlotCardPtr.aboveMe;
+                deckIndex--;
+            }
+        }
+    }
+    for( var newDeckIndex = 0 ; newDeckIndex < 52 ; newDeckIndex++ )
+    {
+        deck[newDeckIndex].myId = newDeckIndex;
+    }
     dealFathersSolitaire();
 }
 
+function detachCard(cardToDetach)
+{
+    if( cardToDetach.aboveMe )
+    {
+        cardToDetach.aboveMe.belowMe = cardToDetach.belowMe;
+    }
+    if( cardToDetach.belowMe )
+    {
+        cardToDetach.belowMe.aboveMe = cardToDetach.aboveMe;
+    }
+    resetCard(cardToDetach);
+    return cardToDetach;
+}
+
 function dealFathersSolitaire() {
-    var index = 0;
+    var index = cardsToBypassWhenDealing;
     for( var round = 0 ; (round < 8) && (index < 52) ; round++ )
     {
         for( var column = 0 ; (column < 7) && (index < 52) ; column++ )
@@ -84,17 +174,22 @@ function createCard(component, suite, number)
     deck[newObject.myId] = newObject;
 }
 
+function resetCard(cardToReset)
+{
+    cardToReset.aboveMe = null;
+    cardToReset.belowMe = null;
+    cardToReset.anchors.centerIn = null;
+    cardToReset.x = firstColumnX;
+    cardToReset.y = firstRowY;
+    cardToReset.z = 10+cardToReset.myId;
+    cardToReset.faceDown = true;
+}
+
 function resetDeck()
 {
+    cardsToBypassWhenDealing = 0;
     for( var index = 0 ; index < 52 ; index++ ) {
-        var cardToReset = deck[index];
-        cardToReset.x = firstColumnX;
-        cardToReset.y = firstRowY;
-        cardToReset.z = 10+index;
-        cardToReset.aboveMe = null;
-        cardToReset.belowMe = null;
-        cardToReset.anchors.centerIn = null;
-        cardToReset.faceDown = true;
+        resetCard(deck[index]);
     }
 }
 
@@ -151,7 +246,7 @@ function createSlotsForFathersSolitaire()
         for( index = 0 ; index < 4 ; index++ ) {
             cardSlots[index+7].x = firstColumnX + (index * deltaX);
             cardSlots[index+7].y = firstRowY;
-            cardSlots[index+7].z = 54;
+            cardSlots[index+7].z = 1;
             cardSlots[index+7].isAceSlot = true;
         }
     }
@@ -164,25 +259,26 @@ function toIndex(suite, number)
 
 function rulesAllowCardOverSlot(cardInQuestion, slotToUse)
 {
-    switch( rules )
+    if( selectedGame === "fathersSolitaire" )
     {
-    case 1: //Father's solitaire
+        // Ace can be only over ace slot
+        if( slotToUse.isAceSlot )
         {
-            // Ace can be only over ace slot
-            if( slotToUse.isAceSlot )
+            if(cardInQuestion.myNumber === 1)
             {
-                if(cardInQuestion.myNumber === 1)
-                {
-                    // and it must be alone
-                    if( cardInQuestion.aboveMe === null )
-                        return true;
-                }
-                return false;
+                // and it must be alone
+                if( cardInQuestion.aboveMe === null )
+                    return true;
             }
-            // allows any card over empty slot when it's not ace slot
-            return true;
+            return false;
         }
-    default: //No rules, everything allowed
+        // allows any card over empty slot when it's not ace slot
+        return true;
+    }
+    else
+    {
+        console.log("No game selected when using rules to place card!")
+        //No rules, everything allowed
         return true;
     }
 }
@@ -223,32 +319,36 @@ function cardIsOverAceSlot(cardObject)
 
 function rulesAllowCardOverOther(cardOnTop, cardBelow)
 {
-    switch( rules )
+    if( selectedGame == "fathersSolitaire" )
     {
-    case 1: //Father's solitaire
+        if( cardBelow.faceDown )
+            return false; // Never OK to be over face down card
+        if( cardIsOverAceSlot(cardBelow) )
         {
-            if( cardBelow.faceDown )
-                return false; // Never OK to be over face down card
-            if( cardIsOverAceSlot(cardBelow) )
-            {
-                // Card needs to be of same suite and one larger than the one below
-                if( (cardBelow.mySuite === cardOnTop.mySuite) &&
-                    ((cardBelow.myNumber+1) === cardOnTop.myNumber) )
-                {
-                    // Card needs to be alone
-                    if( cardOnTop.aboveMe === null )
-                        return true;
-                }
-                return false;
-            }
-            // Card needs to be of same suite and one smaller than the one below
+            // Card needs to be of same suite and one larger than the one below
             if( (cardBelow.mySuite === cardOnTop.mySuite) &&
-                (cardBelow.myNumber === (cardOnTop.myNumber+1)) )
-                return true;
-            else
-                return false;
+                ((cardBelow.myNumber+1) === cardOnTop.myNumber) )
+            {
+                // Card needs to be alone
+                if( cardOnTop.aboveMe === null )
+                    return true;
+            }
+            return false;
         }
-    default: //No rules, everything allowed
+        // Card needs to be of same suite and one smaller than the one below
+        if( (cardBelow.mySuite === cardOnTop.mySuite) &&
+            (cardBelow.myNumber === (cardOnTop.myNumber+1)) )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        console.log("No rules defined when placing card over another!");
         return true;
     }
 }
@@ -264,16 +364,16 @@ function getDefaultOffset(cardBelow)
 
 function offsetFromRuling(cardBelow)
 {
-    switch( rules )
+    if( selectedGame === "fathersSolitaire" )
     {
-    case 1: //Father's solitaire
-        {
         if( cardIsOverAceSlot(cardBelow) )
             return 0;
         else
             return getDefaultOffset(cardBelow);
-        }
-    default:
+    }
+    else
+    {
+        console.log("No rules defined when choosing offset!");
         return getDefaultOffset(cardBelow);
     }
 }
@@ -307,6 +407,7 @@ function cardReadyToAnchor(cardIndex, applyRuling)
 {
     if( !(52 > cardIndex) )
     {
+        console.log("Invalid card index ", cardIndex, " tried to be attached, aborting...");
         return false;
     }
 
@@ -352,12 +453,24 @@ function cardReadyToAnchor(cardIndex, applyRuling)
             isSlot = false;
         }
     }
+    var returnValue;
     if( isSlot )
     {
-        return anchorCardOverSlot(cardToAnchor, selectedCard, applyRuling);
+        returnValue = anchorCardOverSlot(cardToAnchor, selectedCard, applyRuling);
     }
     else
     {
-        return anchorCardOverOther(cardToAnchor, selectedCard, applyRuling);
+        returnValue = anchorCardOverOther(cardToAnchor, selectedCard, applyRuling);
     }
+    if( false === returnValue )
+    {
+        // Anchoring failed, make sure card is left without connections.
+        if( cardToAnchor.belowMe )
+        {
+            cardToAnchor.belowMe.aboveMe = null;
+            cardToAnchor.belowMe = null;
+        }
+        cardToAnchor.anchors.centerIn = null;
+    }
+    return returnValue;
 }
