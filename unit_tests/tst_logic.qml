@@ -412,6 +412,7 @@ TestCase {
         compare(Logic.deck[34].aboveMe, Logic.deck[41])
         compare(Logic.deck[41].aboveMe, Logic.deck[48])
         compare(Logic.selectedGame, "fathersSolitaire")
+        compare(Logic.amountOfRedealsLeft, 3);
     }
 
     function test_redealFathersSolitaire() {
@@ -421,6 +422,7 @@ TestCase {
         var lastPileTopCardSuite = Logic.deck[41].mySuite;
         var lastPileTopCardNumber = Logic.deck[41].myNumber;
         Logic.redeal();
+        compare(Logic.amountOfRedealsLeft, 2);
         compare(Logic.deck[51].mySuite, newLastCardSuite);
         compare(Logic.deck[51].myNumber, newLastCardNumber);
         compare(Logic.deck[0].mySuite, lastPileTopCardSuite);
@@ -446,6 +448,12 @@ TestCase {
         Logic.cardsToBypassWhenDealing = 3;
         Logic.dealFathersSolitaire();
         Logic.cardsToBypassWhenDealing = 0;
+        Logic.amountOfRedealsLeft = 0;
+        Logic.redeal();
+        compare(Logic.amountOfRedealsLeft, 0);
+        compare(Logic.deck[0].mySuite, "diamond");
+        compare(Logic.deck[0].myNumber, 1);
+        Logic.amountOfRedealsLeft = 1;
         Logic.redeal();
         compare(Logic.cardsToBypassWhenDealing, 3);
         compare(Logic.deck[0].mySuite, "diamond");

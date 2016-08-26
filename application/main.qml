@@ -41,6 +41,7 @@ Window {
         onClicked: {
             mainMenu.popup();
         }
+        style: DeactivableButtonStyle {}
     }
 
     GameMenu {

@@ -12,17 +12,23 @@ Rectangle {
     function cardReadyToAnchor(index, applyRuling) {
         return Logic.cardReadyToAnchor(index, applyRuling);
     }
+    property bool shuffleButtonVisible: false
+    property bool shuffleButtonActive: false
     Component.onCompleted: {
         Logic.createDeck();
     }
+
     Button {
         id: shuffleButton
         x: mainWindow.width - mainWindow.menuButtonWidth - width
         anchors.top: parent.top
         text: qsTr("TR_Shuffle") + LanguageSelector.bindingString
+        visible: shuffleButtonVisible
         onClicked: {
             Logic.redeal();
         }
+        style: DeactivableButtonStyle {
+            active: shuffleButtonActive
+        }
     }
-
 }

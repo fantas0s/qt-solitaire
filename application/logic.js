@@ -11,12 +11,16 @@ var allowedCardOffsetX = 54; // half of card width (80/2) + half of (deltaX - ca
 var allowedCardOffsetY = 74; // half of card height (120/2) + half of cardSeparator (30/2) - 1.
 var selectedGame = "none";
 var cardsToBypassWhenDealing = 0;
+var amountOfRedealsLeft = -1;
 
 function startGame(gameId) {
     selectedGame = gameId;
     resetDeck();
     if( "fathersSolitaire" === selectedGame )
     {
+        amountOfRedealsLeft = 3;
+        mainObject.shuffleButtonVisible = true;
+        mainObject.shuffleButtonActive = true;
         shuffleDeck();
         createSlotsForFathersSolitaire();
         dealFathersSolitaire();
@@ -27,9 +31,21 @@ function startGame(gameId) {
 
 function redeal()
 {
-    if( "fathersSolitaire" === selectedGame )
+    if( amountOfRedealsLeft )
     {
-        reDealFathersSolitaire();
+        amountOfRedealsLeft--;
+        if( "fathersSolitaire" === selectedGame )
+        {
+            reDealFathersSolitaire();
+        }
+        else
+        {
+            console.log("Attempt to redeal in game without redeal functionality!");
+        }
+    }
+    if( 0 === amountOfRedealsLeft )
+    {
+        mainObject.shuffleButtonActive = false;
     }
 }
 
