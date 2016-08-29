@@ -35,7 +35,6 @@ MouseArea {
         }
     }
     onReleased: {
-        console.log("myId = ", myId);
         if( !faceDown )
         {
             if( ((x === storedX) &&
