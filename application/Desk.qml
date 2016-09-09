@@ -4,13 +4,23 @@ import qtsolitaire.languageselector 1.0
 import "logic.js" as Logic
 
 Rectangle {
+    id: _desk
     color: "green"
     function startGame(gameId) {
         Logic.deleteSlots();
         return Logic.startGame(gameId);
     }
     function cardReadyToAnchor(index, applyRuling) {
-        return Logic.cardReadyToAnchor(index, applyRuling);
+        if( Logic.cardReadyToAnchor(index, applyRuling) )
+        {
+            if( Logic.initialSlotsEmpty() )
+            {
+                gameCompleteCongratulations.visible = true;
+                gameCompleteCongratulations.isPlaying = true;
+            }
+            return true;
+        }
+        return false;
     }
     property bool shuffleButtonVisible: false
     property bool shuffleButtonActive: false
@@ -20,7 +30,7 @@ Rectangle {
 
     Button {
         id: shuffleButton
-        x: mainWindow.width - mainWindow.menuButtonWidth - width
+        x: mainArea.contentWidth - mainArea.menuButtonWidth - width
         anchors.top: parent.top
         text: qsTr("TR_Shuffle") + LanguageSelector.bindingString
         visible: shuffleButtonVisible
@@ -30,5 +40,13 @@ Rectangle {
         style: DeactivableButtonStyle {
             active: shuffleButtonActive
         }
+    }
+
+    GameCompeleteBanner {
+        id: gameCompleteCongratulations
+        anchors.centerIn: parent
+        visible: false
+        isPlaying: false
+        z: parent.z + 1000
     }
 }

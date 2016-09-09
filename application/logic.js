@@ -148,6 +148,24 @@ function dealFathersSolitaire() {
     }
 }
 
+function initialSlotsEmpty() {
+    if( "fathersSolitaire" === selectedGame )
+    {
+        if( cardSlots[0].aboveMe ||
+            cardSlots[1].aboveMe ||
+            cardSlots[2].aboveMe ||
+            cardSlots[3].aboveMe ||
+            cardSlots[4].aboveMe ||
+            cardSlots[5].aboveMe ||
+            cardSlots[6].aboveMe )
+            return false;
+        else
+            return true;
+    }
+    console.log("Attempt to check initialSlotsEmpty in game without that functionality!");
+    return false;
+}
+
 function createDeck() {
     var component = Qt.createComponent("Card.qml");
     if (component.status === Component.Ready)

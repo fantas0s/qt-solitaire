@@ -20,5 +20,7 @@
         <file>images/black_red.png</file>
         <file>GameMenu.qml</file>
         <file>DeactivableButtonStyle.qml</file>
+        <file>GameCompeleteBanner.qml</file>
+        <file>images/slow_clap_citizen_kane.gif</file>
     </qresource>
 </RCC>

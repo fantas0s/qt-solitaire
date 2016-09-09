@@ -3,7 +3,7 @@ import QtTest 1.0
 import "../application"
 
 TestCase {
-    id: mainWindow
+    id: mainArea
     name: "DeskTests"
     width: 800
     height: 480
