@@ -3,6 +3,7 @@ import QtTest 1.0
 import "../application"
 
 TestCase {
+    id: mainWindow
     name: "CardSlotTests"
     width: 800
     height:480

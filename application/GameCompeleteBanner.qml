@@ -13,12 +13,6 @@ Rectangle {
         playing: _banner.isPlaying
         paused: !_banner.isPlaying
         anchors.centerIn: parent
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                _banner.visible = false;
-            }
-        }
         Text {
             id: wonText
             anchors.centerIn: parent

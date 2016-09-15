@@ -148,7 +148,7 @@ function dealFathersSolitaire() {
     }
 }
 
-function initialSlotsEmpty() {
+function gameIsComplete() {
     if( "fathersSolitaire" === selectedGame )
     {
         if( cardSlots[0].aboveMe ||

@@ -10,13 +10,20 @@ Rectangle {
         Logic.deleteSlots();
         return Logic.startGame(gameId);
     }
+
+    function setButtonsEnabledState(newState) {
+        menuButton.enabled = newState;
+        shuffleButton.enabled = newState;
+    }
+
     function cardReadyToAnchor(index, applyRuling) {
         if( Logic.cardReadyToAnchor(index, applyRuling) )
         {
-            if( Logic.initialSlotsEmpty() )
+            if( Logic.gameIsComplete() )
             {
                 gameCompleteCongratulations.visible = true;
                 gameCompleteCongratulations.isPlaying = true;
+                setButtonsEnabledState(false);
             }
             return true;
         }
@@ -44,9 +51,19 @@ Rectangle {
 
     GameCompeleteBanner {
         id: gameCompleteCongratulations
-        anchors.centerIn: parent
+        x: (mainWindow.width / 2) - (width / 2)
+        y: (mainWindow.height / 2) - (height / 2)
         visible: false
         isPlaying: false
         z: parent.z + 1000
+        MouseArea {
+            anchors.centerIn: parent
+            width: mainWindow.width
+            height: mainWindow.height
+            onClicked: {
+                setButtonsEnabledState(true);
+                gameCompleteCongratulations.visible = false;
+            }
+        }
     }
 }

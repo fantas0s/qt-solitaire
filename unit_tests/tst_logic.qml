@@ -4,11 +4,15 @@ import "../application/logic.js" as Logic
 import "../application"
 
 TestCase {
-    id: mainArea
+    id: mainWindow
     name: "LogicTests"
     width: 800
     height: 480
     property int menuButtonWidth: 80
+    Item {
+        id: mainArea
+        anchors.fill: parent
+    }
 
     Card {
         id: cardForTesting
@@ -464,51 +468,51 @@ TestCase {
         compare(Logic.deck[2].myNumber, 1);
     }
 
-    function test_initialSlotsEmptyForFathersSolitaire() {
+    function test_gameIsCompleteForFathersSolitaire() {
         Logic.selectedGame = "fathersSolitaire";
         Logic.resetDeck();
         Logic.createSlotsForFathersSolitaire();
-        compare(Logic.initialSlotsEmpty(), true);
+        compare(Logic.gameIsComplete(), true);
         compare(Logic.anchorCardOverSlot(Logic.deck[0], Logic.cardSlots[7], true), true);
-        compare(Logic.initialSlotsEmpty(), true);
+        compare(Logic.gameIsComplete(), true);
         compare(Logic.anchorCardOverSlot(Logic.deck[13], Logic.cardSlots[8], true), true);
-        compare(Logic.initialSlotsEmpty(), true);
+        compare(Logic.gameIsComplete(), true);
         compare(Logic.anchorCardOverSlot(Logic.deck[26], Logic.cardSlots[9], true), true);
-        compare(Logic.initialSlotsEmpty(), true);
+        compare(Logic.gameIsComplete(), true);
         compare(Logic.anchorCardOverSlot(Logic.deck[39], Logic.cardSlots[10], true), true);
-        compare(Logic.initialSlotsEmpty(), true);
+        compare(Logic.gameIsComplete(), true);
         compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[0], true), true);
-        compare(Logic.initialSlotsEmpty(), false);
+        compare(Logic.gameIsComplete(), false);
         Logic.cardSlots[0].aboveMe = null;
         Logic.deck[1].belowMe = null;
         Logic.deck[1].anchors.centerIn = undefined;
         compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[1], true), true);
-        compare(Logic.initialSlotsEmpty(), false);
+        compare(Logic.gameIsComplete(), false);
         Logic.cardSlots[1].aboveMe = null;
         Logic.deck[1].belowMe = null;
         Logic.deck[1].anchors.centerIn = undefined;
         compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[2], true), true);
-        compare(Logic.initialSlotsEmpty(), false);
+        compare(Logic.gameIsComplete(), false);
         Logic.cardSlots[2].aboveMe = null;
         Logic.deck[1].belowMe = null;
         Logic.deck[1].anchors.centerIn = undefined;
         compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[3], true), true);
-        compare(Logic.initialSlotsEmpty(), false);
+        compare(Logic.gameIsComplete(), false);
         Logic.cardSlots[3].aboveMe = null;
         Logic.deck[1].belowMe = null;
         Logic.deck[1].anchors.centerIn = undefined;
         compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[4], true), true);
-        compare(Logic.initialSlotsEmpty(), false);
+        compare(Logic.gameIsComplete(), false);
         Logic.cardSlots[4].aboveMe = null;
         Logic.deck[1].belowMe = null;
         Logic.deck[1].anchors.centerIn = undefined;
         compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[5], true), true);
-        compare(Logic.initialSlotsEmpty(), false);
+        compare(Logic.gameIsComplete(), false);
         Logic.cardSlots[5].aboveMe = null;
         Logic.deck[1].belowMe = null;
         Logic.deck[1].anchors.centerIn = undefined;
         compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[6], true), true);
-        compare(Logic.initialSlotsEmpty(), false);
+        compare(Logic.gameIsComplete(), false);
         Logic.cardSlots[6].aboveMe = null;
         Logic.deck[1].belowMe = null;
         Logic.deck[1].anchors.centerIn = undefined;
