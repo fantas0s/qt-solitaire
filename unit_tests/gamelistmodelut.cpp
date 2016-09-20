@@ -100,8 +100,8 @@ void GameListModelUT::roleNames()
 void GameListModelUT::testForceUpdate()
 {
     GameListModel* listModel = new GameListModel();
-    QObject::connect(this, &updateTrigger,
-                     listModel, &listModel->forceUpdate);
+    QObject::connect(this, SIGNAL(updateTrigger()),
+                     listModel, SLOT(forceUpdate()));
     QAbstractItemModel* itemModel = qobject_cast<QAbstractItemModel*>(listModel);
     QSignalSpy spy(itemModel, SIGNAL(dataChanged(const QModelIndex, const QModelIndex, const QVector<int>&)));
     QCOMPARE(spy.count(), 0);

@@ -11,6 +11,7 @@ MouseArea {
     property Item aboveMe: null
     property int storedX: x
     property int storedY: y
+    property bool beingDragged: false
     width: 80
     height: 120
     onClicked: {
@@ -23,6 +24,7 @@ MouseArea {
     onPressed: {
         if( !faceDown )
         {
+            beingDragged = true;
             if( belowMe )
             {
                 belowMe.aboveMe = null;
@@ -35,6 +37,7 @@ MouseArea {
         }
     }
     onReleased: {
+        beingDragged = false;
         if( !faceDown )
         {
             if( ((x === storedX) &&
@@ -60,6 +63,24 @@ MouseArea {
     drag.maximumX: parent.width
     drag.minimumY: 0
     drag.maximumY: parent.height
+
+    onYChanged: {
+        if(beingDragged)
+        {
+            if( (__card.y - mainArea.contentY) < 30 ) {
+                // Too close to top
+                if( (__card.y > 30) &&
+                    (mainArea.contentY > 10) )
+                    mainArea.contentY = __card.y-30;
+            } else if ((__card.y - mainArea.contentY) > (mainWindow.height - __card.height)) {
+                // Too close to bottom
+                if( (__card.y < (mainArea.contentHeight - (__card.height+30))) &&
+                    (mainArea.contentY < (mainArea.contentHeight-(mainWindow.height+10))) )
+                    mainArea.contentY = __card.y-(mainWindow.height-__card.height);
+            }
+        }
+    }
+
     Image {
         id: tausta
         source: "cardback.jpg"
