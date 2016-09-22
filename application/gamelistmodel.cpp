@@ -5,18 +5,18 @@
 
 const QString solitaireIds[NUM_OF_GAMES] = {
     "fathersSolitaire",
-    "pyramid",
+    "blackRed",
     "napoleon",
     "clock",
-    "blackRed"
+    "pyramid"
 };
 
 const QString imageFileUris[NUM_OF_GAMES] = {
     "images/fathers_solitaire.png",
-    "images/pyramid_solitaire.png",
+    "images/black_red.png",
     "images/napoleons_grave.png",
     "images/the_clock.png",
-    "images/black_red.png"
+    "images/pyramid_solitaire.png"
 };
 
 GameListModel::GameListModel()
@@ -58,13 +58,13 @@ QVariant GameListModel::getSolitaireName(const int row) const
     default:
         return tr("TR_Father's Solitaire");
     case 1:
-        return tr("TR_Pyramid");
+        return tr("TR_Classic Black And Red");
     case 2:
         return tr("TR_Napoleon's Grave");
     case 3:
         return tr("TR_The Clock");
     case 4:
-        return tr("TR_Classic Black And Red");
+        return tr("TR_Pyramid");
     }
 }
 

@@ -17,8 +17,8 @@ TestCase {
         compare(modelToTest.data(modelToTest.index(0,0), 257), qsTr("TR_Father's Solitaire"))
         compare(modelToTest.data(modelToTest.index(0,0), 258), "images/fathers_solitaire.png")
         compare(modelToTest.data(modelToTest.index(0,0), 259), "fathersSolitaire")
-        compare(modelToTest.data(modelToTest.index(4,0), 257), qsTr("TR_Classic Black And Red"))
-        compare(modelToTest.data(modelToTest.index(4,0), 258), "images/black_red.png")
-        compare(modelToTest.data(modelToTest.index(4,0), 259), "blackRed")
+        compare(modelToTest.data(modelToTest.index(4,0), 257), qsTr("TR_Pyramid"))
+        compare(modelToTest.data(modelToTest.index(4,0), 258), "images/pyramid_solitaire.png")
+        compare(modelToTest.data(modelToTest.index(4,0), 259), "pyramid")
     }
 }
