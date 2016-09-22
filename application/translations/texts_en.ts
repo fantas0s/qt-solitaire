@@ -34,7 +34,7 @@
         <translation>Father&apos;s Solitaire</translation>
     </message>
     <message>
-        <location filename="../gamelistmodel.cpp" line="61"/>
+        <location filename="../gamelistmodel.cpp" line="67"/>
         <source>TR_Pyramid</source>
         <translation>Pyramid</translation>
     </message>
@@ -49,7 +49,7 @@
         <translation>The Clock</translation>
     </message>
     <message>
-        <location filename="../gamelistmodel.cpp" line="67"/>
+        <location filename="../gamelistmodel.cpp" line="61"/>
         <source>TR_Classic Black And Red</source>
         <translation>Classic Solitaire</translation>
     </message>

@@ -34,7 +34,7 @@
         <translation>Isän pasianssi</translation>
     </message>
     <message>
-        <location filename="../gamelistmodel.cpp" line="61"/>
+        <location filename="../gamelistmodel.cpp" line="67"/>
         <source>TR_Pyramid</source>
         <translation>Pyramidipasianssi</translation>
     </message>
@@ -49,7 +49,7 @@
         <translation>Kello</translation>
     </message>
     <message>
-        <location filename="../gamelistmodel.cpp" line="67"/>
+        <location filename="../gamelistmodel.cpp" line="61"/>
         <source>TR_Classic Black And Red</source>
         <translation>Punamusta pasianssi</translation>
     </message>
