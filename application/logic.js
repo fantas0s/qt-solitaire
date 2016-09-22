@@ -1,12 +1,13 @@
 var deck = new Array(52);
-var cardSlots = new Array(11);
+var cardSlots = new Array(12);
 var slotCount = 0;
 var cardSeparator = 30;
 var faceDownCardSeparator = 5;
 var firstRowY = 5;
 var firstGameAreaRowY = 150;
 var firstColumnX = 30;
-var deltaX = 110;
+var deltaX = 110; // card width (80) + cardSeparator (30).
+var deltaY = 150; // card height (120) + cardSeparator (30).
 var allowedCardOffsetX = 54; // half of card width (80/2) + half of (deltaX - cardwidth) ((110-80)/2) - 1.
 var allowedCardOffsetY = 74; // half of card height (120/2) + half of cardSeparator (30/2) - 1.
 var selectedGame = "none";
@@ -24,6 +25,18 @@ function startGame(gameId) {
         shuffleDeck();
         createSlotsForFathersSolitaire();
         dealFathersSolitaire();
+        mainObject.gameAreaHeight = 1000;
+        return true;
+    }
+    else if ("napoleon" === selectedGame)
+    {
+        amountOfRedealsLeft = 0;
+        mainObject.shuffleButtonVisible = false;
+        mainObject.shuffleButtonActive = false;
+        shuffleDeck();
+        createSlotsForNapoleonsGrave();
+        dealNapoleonsGrave();
+        mainObject.gameAreaHeight = mainWindow.height;
         return true;
     }
     return false;
@@ -125,6 +138,18 @@ function detachCard(cardToDetach)
     return cardToDetach;
 }
 
+function indexOfSixWithinTopTenCards()
+{
+    for( var index = 51 ; index > 41 ; index-- )
+    {
+        if( 6 === deck[index].myNumber )
+        {
+            return index;
+        }
+    }
+    return -1;
+}
+
 function dealFathersSolitaire() {
     var index = cardsToBypassWhenDealing;
     for( var round = 0 ; (round < 8) && (index < 52) ; round++ )
@@ -148,6 +173,36 @@ function dealFathersSolitaire() {
     }
 }
 
+function dealNapoleonsGrave() {
+    // shuffle the deck until there is a six within top ten cards
+    var indexOfSix = indexOfSixWithinTopTenCards();
+    while( -1 === indexOfSix ) {
+        shuffleDeck();
+        indexOfSix = indexOfSixWithinTopTenCards();
+    }
+    // Entire deck to deck slot, except from six onwards
+    anchorCardOverSlot(deck[0], cardSlots[0], false);
+    for( var index = 1 ; index < indexOfSix ; index++ )
+    {
+        anchorCardOverOther(deck[index], deck[index-1], false);
+    }
+    deck[index-1].faceDown=false;
+    // six to six slot
+    anchorCardOverSlot(deck[indexOfSix], cardSlots[11], false);
+    deck[indexOfSix].faceDown=false;
+    if( 51 > indexOfSix )
+    {
+        // rest of cards to turned over slot
+        anchorCardOverSlot(deck[indexOfSix+1], cardSlots[1], false);
+        deck[indexOfSix+1].faceDown=false;
+        for( index = indexOfSix+2 ; index < 52 ; index++ )
+        {
+            anchorCardOverOther(deck[index], deck[index-1], false);
+            deck[index].faceDown=false;
+        }
+    }
+}
+
 function gameIsComplete() {
     if( "fathersSolitaire" === selectedGame )
     {
@@ -162,7 +217,19 @@ function gameIsComplete() {
         else
             return true;
     }
-    console.log("Attempt to check initialSlotsEmpty in game without that functionality!");
+    else if( "napoleon" === selectedGame )
+    {
+        if( cardSlots[0].aboveMe ||
+            cardSlots[1].aboveMe ||
+            cardSlots[3].aboveMe ||
+            cardSlots[5].aboveMe ||
+            cardSlots[7].aboveMe ||
+            cardSlots[9].aboveMe )
+            return false;
+        else
+            return true;
+    }
+    console.log("Attempt to check gameIsComplete in game without that functionality!");
     return false;
 }
 
@@ -281,8 +348,50 @@ function createSlotsForFathersSolitaire()
             cardSlots[index+7].x = firstColumnX + (index * deltaX);
             cardSlots[index+7].y = firstRowY;
             cardSlots[index+7].z = 1;
-            cardSlots[index+7].isAceSlot = true;
+            cardSlots[index+7].acceptsOnlySpecificNumber = true;
+            cardSlots[index+7].acceptedNumber = 1;
         }
+    }
+}
+
+function createSlotsForNapoleonsGrave()
+{
+    createSlots(12);
+    if( slotCount === 12 )
+    {
+        // slot for deck
+        cardSlots[0].x = firstColumnX;
+        cardSlots[0].y = firstRowY;
+        cardSlots[0].z = 1;
+        // slot for turned over cards
+        cardSlots[1].x = firstColumnX;
+        cardSlots[1].y = firstRowY + deltaY;
+        cardSlots[1].z = 1;
+        for( var row = 0 ; row < 3 ; row++ ) {
+            for( var column = 0 ; column < 3 ; column++ ) {
+                var index = 2 + (row*3) + column;
+                cardSlots[index].x = firstColumnX + ((column+1) * deltaX) + (deltaX / 2);
+                cardSlots[index].y = firstRowY + (row * deltaY);
+                cardSlots[index].z = 1;
+            }
+        }
+        // slots for sevens
+        cardSlots[2].acceptsOnlySpecificNumber = true;
+        cardSlots[2].acceptedNumber = 7;
+        cardSlots[4].acceptsOnlySpecificNumber = true;
+        cardSlots[4].acceptedNumber = 7;
+        cardSlots[8].acceptsOnlySpecificNumber = true;
+        cardSlots[8].acceptedNumber = 7;
+        cardSlots[10].acceptsOnlySpecificNumber = true;
+        cardSlots[10].acceptedNumber = 7;
+        // slots for sixes
+        cardSlots[11].x = firstColumnX + (5 * deltaX);
+        cardSlots[11].y = firstRowY;
+        cardSlots[11].z = 1;
+        cardSlots[11].acceptsOnlySpecificNumber = true;
+        cardSlots[11].acceptedNumber = 6;
+        cardSlots[6].acceptsOnlySpecificNumber = true;
+        cardSlots[6].acceptedNumber = 6;
     }
 }
 
@@ -293,21 +402,31 @@ function toIndex(suite, number)
 
 function rulesAllowCardOverSlot(cardInQuestion, slotToUse)
 {
+    if( slotToUse.acceptsOnlySpecificNumber &&
+        (cardInQuestion.myNumber !== slotToUse.acceptedNumber) )
+        return false; // None of the rules allow this.
+
     if( selectedGame === "fathersSolitaire" )
     {
-        // Ace can be only over ace slot
-        if( slotToUse.isAceSlot )
+        // Aceslot only accepts ace that is not part of a pile.
+        if( slotToUse.acceptsOnlySpecificNumber )
         {
-            if(cardInQuestion.myNumber === 1)
-            {
-                // and it must be alone
-                if( cardInQuestion.aboveMe === null )
-                    return true;
-            }
-            return false;
+            // card already matches to slot or we wouldn't be here
+            if( cardInQuestion.aboveMe === null )
+                return true;
+            else
+                return false;
         }
         // allows any card over empty slot when it's not ace slot
         return true;
+    }
+    else if (selectedGame === "napoleon")
+    {
+        // Cards cannot be put back to original slot.
+        if (slotToUse === cardSlots[0])
+            return false;
+        else // Everything else is fine if original check was passed.
+            return true;
     }
     else
     {
@@ -335,7 +454,7 @@ function anchorCardOverSlot(cardToAnchor, slotToUse, applyRuling)
     return false;
 }
 
-function cardIsOverAceSlot(cardObject)
+function getSlotBelowCard(cardObject)
 {
     var slot = cardObject.belowMe;
     while( slot &&
@@ -344,8 +463,15 @@ function cardIsOverAceSlot(cardObject)
     {
         slot = slot.belowMe;
     }
+    return slot;
+}
+
+function cardIsOverAceSlot(cardObject)
+{
+    var slot = getSlotBelowCard(cardObject);
     if( slot &&
-        slot.isAceSlot )
+        slot.acceptsOnlySpecificNumber  &&
+        (1 === slot.acceptedNumber) )
         return true;
     else
         return false;
@@ -380,6 +506,43 @@ function rulesAllowCardOverOther(cardOnTop, cardBelow)
             return false;
         }
     }
+    else if (selectedGame == "napoleon")
+    {
+        var slot = getSlotBelowCard(cardBelow);
+        // can always pile to turnover slot
+        if( cardSlots[1] === slot)
+            return true;
+        //only sixes allowed to six slot
+        if( cardSlots[11] === slot) {
+            if (cardOnTop.myNumber === 6)
+                return true;
+            else
+                return false;
+        }
+        if (slot.acceptsOnlySpecificNumber) {
+            // has to be one number greater if seven slot and one number fewer in center slot
+            if (7 === slot.acceptedNumber) {
+                if( cardOnTop.myNumber === (cardBelow.myNumber + 1) )
+                    return true;
+                else
+                    return false;
+            } else {
+                if( (cardOnTop.myNumber + 1) === cardBelow.myNumber ) {
+                    return true;
+                } else {
+                    // six can be placed on top of ace
+                    if( (6 === cardOnTop.myNumber) &&
+                        (1 === cardBelow.myNumber)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        // only one card on generic slots.
+        return false;
+    }
     else
     {
         console.log("No rules defined when placing card over another!");
@@ -387,29 +550,22 @@ function rulesAllowCardOverOther(cardOnTop, cardBelow)
     }
 }
 
-function getDefaultOffset(cardBelow)
-{
-    // Default pileup
-    if( cardBelow.faceDown )
-        return faceDownCardSeparator;
-    else
-        return cardSeparator;
-}
-
-function offsetFromRuling(cardBelow)
+function getVerticalOffsetForCard(cardBelow)
 {
     if( selectedGame === "fathersSolitaire" )
     {
         if( cardIsOverAceSlot(cardBelow) )
             return 0;
-        else
-            return getDefaultOffset(cardBelow);
     }
-    else
+    else if( selectedGame === "napoleon" )
     {
-        console.log("No rules defined when choosing offset!");
-        return getDefaultOffset(cardBelow);
+        return 0;
     }
+    // Default pileup used if rules make no exception to it or no rules used.
+    if( cardBelow.faceDown )
+        return faceDownCardSeparator;
+    else
+        return cardSeparator;
 }
 
 function anchorCardOverOther(cardOnTop, cardBelow, applyRuling)
@@ -423,10 +579,7 @@ function anchorCardOverOther(cardOnTop, cardBelow, applyRuling)
                 rulesAllowCardOverOther(cardOnTop, cardBelow) )
             {
                 cardOnTop.anchors.centerIn = cardBelow;
-                if( applyRuling )
-                    cardOnTop.anchors.verticalCenterOffset = offsetFromRuling(cardBelow);
-                else
-                    cardOnTop.anchors.verticalCenterOffset = getDefaultOffset(cardBelow);
+                cardOnTop.anchors.verticalCenterOffset = getVerticalOffsetForCard(cardBelow);
                 cardOnTop.z = Qt.binding(function() {return cardBelow.z+1});
                 cardBelow.aboveMe = cardOnTop;
                 cardOnTop.belowMe = cardBelow;
@@ -448,7 +601,7 @@ function cardReadyToAnchor(cardIndex, applyRuling)
     var cardToAnchor = deck[cardIndex];
     var selectedCard;
     var isSlot = false;
-    for( var slotLoopIndex = 0 ; slotLoopIndex < 11 ; slotLoopIndex++ )
+    for( var slotLoopIndex = 0 ; slotLoopIndex < slotCount ; slotLoopIndex++ )
     {
         // First try card slots
         var compareSlot = cardSlots[slotLoopIndex];

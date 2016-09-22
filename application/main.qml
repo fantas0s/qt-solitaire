@@ -12,7 +12,7 @@ Window {
         id: mainArea
         anchors.fill: parent
         contentWidth: parent.width
-        contentHeight: 1000
+        contentHeight: mainObject.gameAreaHeight
         property int menuButtonWidth: menuButton.width
 
         StackView {

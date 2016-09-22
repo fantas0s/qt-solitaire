@@ -6,7 +6,7 @@ TestCase {
     id: mainWindow
     name: "DeskTests"
     width: 800
-    height: 480
+    height: 479
     when: windowShown
     property int menuButtonWidth: 80
 
@@ -18,5 +18,8 @@ TestCase {
     }
     function test_default_values() {
         compare(mainObject.color, "#008000");
+        compare(mainObject.gameAreaHeight, mainWindow.height);
+        compare(mainObject.shuffleButtonVisible, false);
+        compare(mainObject.shuffleButtonActive, false);
     }
 }

@@ -6,6 +6,9 @@ import "logic.js" as Logic
 Rectangle {
     id: _desk
     color: "green"
+    property int gameAreaHeight: mainWindow.height
+    property bool shuffleButtonVisible: false
+    property bool shuffleButtonActive: false
     function startGame(gameId) {
         Logic.deleteSlots();
         return Logic.startGame(gameId);
@@ -29,8 +32,6 @@ Rectangle {
         }
         return false;
     }
-    property bool shuffleButtonVisible: false
-    property bool shuffleButtonActive: false
     Component.onCompleted: {
         Logic.createDeck();
     }

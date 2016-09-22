@@ -44,6 +44,7 @@ TestCase {
     }
 
     function init_data() {
+        Logic.selectedGame = "";
         Logic.createDeck();
         Logic.createSlotsForFathersSolitaire();
     }
@@ -87,16 +88,16 @@ TestCase {
         compare(Logic.slotCount, 11);
         compare(Logic.cardSlots[0].x, Logic.firstColumnX);
         compare(Logic.cardSlots[0].y, Logic.firstGameAreaRowY);
-        compare(Logic.cardSlots[0].isAceSlot, false);
+        compare(Logic.cardSlots[0].acceptsOnlySpecificNumber, false);
         compare(Logic.cardSlots[6].x, Logic.firstColumnX+(6*Logic.deltaX));
         compare(Logic.cardSlots[6].y, Logic.firstGameAreaRowY);
-        compare(Logic.cardSlots[6].isAceSlot, false);
+        compare(Logic.cardSlots[6].acceptsOnlySpecificNumber, false);
         compare(Logic.cardSlots[7].x, Logic.firstColumnX);
         compare(Logic.cardSlots[7].y, Logic.firstRowY);
-        compare(Logic.cardSlots[7].isAceSlot, true);
+        compare(Logic.cardSlots[7].acceptsOnlySpecificNumber, true);
         compare(Logic.cardSlots[10].x, Logic.firstColumnX+(3*Logic.deltaX));
         compare(Logic.cardSlots[10].y, Logic.firstRowY);
-        compare(Logic.cardSlots[10].isAceSlot, true);
+        compare(Logic.cardSlots[10].acceptsOnlySpecificNumber, true);
     }
 
     function test_4_deleteSlots() {
@@ -300,50 +301,6 @@ TestCase {
         compare(Logic.cardReadyToAnchor(50, true), false)
     }
 
-    function test_cardReadyToAnchor_overFaceDownCardInFathersSolitaire()
-    {
-        Logic.deck[50].x = 450;
-        Logic.deck[50].y = 450;
-        Logic.deck[50].z = 1000;
-        Logic.deck[50].faceDown = false;
-        Logic.deck[51].x = 450;
-        Logic.deck[51].y = 450;
-        Logic.deck[51].z = 45;
-        Logic.deck[51].faceDown = true;
-        Logic.selectedGame = "fathersSolitaire";
-        compare(Logic.cardReadyToAnchor(50, true), false)
-        Logic.deck[51].faceDown = false;
-        compare(Logic.cardReadyToAnchor(50, true), true)
-        Logic.deck[50].anchors.centerIn = null;
-        Logic.deck[50].belowMe = null;
-        Logic.deck[51].aboveMe = null;
-    }
-
-    function test_cardReadyToAnchor_overAnAceSlotInFathersSolitaire()
-    {
-        var slot = Logic.cardSlots[10];
-        slot.x = 450;
-        slot.y = 450;
-        slot.isAceSlot = true;
-        Logic.deck[51].x = 450;
-        Logic.deck[51].y = 450;
-        Logic.selectedGame = "fathersSolitaire";
-        compare(Logic.cardReadyToAnchor(51, true), false)
-        compare(Logic.deck[51].anchors.centerIn, null)
-        compare(Logic.cardReadyToAnchor(51, false), true)
-        Logic.deck[51].anchors.centerIn = null;
-        Logic.cardSlots[10].aboveMe = null;
-        Logic.deck[51].x = 0;
-        Logic.deck[51].y = 0;
-        Logic.deck[0].x = 450;
-        Logic.deck[0].y = 450;
-        compare(Logic.cardReadyToAnchor(0, true), true)
-        compare(Logic.deck[0].anchors.centerIn, slot)
-        compare(Logic.deck[0].anchors.verticalCenterOffset, 0)
-        Logic.cardSlots[10].aboveMe = null;
-        Logic.selectedGame = "";
-    }
-
     function test_cardReadyToAnchor_overACardOverASlot()
     {
         var slot = Logic.cardSlots[10];
@@ -351,6 +308,7 @@ TestCase {
         slot.y = 450;
         Logic.deck[51].x = 450;
         Logic.deck[51].y = 450;
+        Logic.deck[51].faceDown = true;
         compare(Logic.cardReadyToAnchor(51, false), true)
         Logic.deck[49].x = 451;
         Logic.deck[49].y = 451;
@@ -400,6 +358,14 @@ TestCase {
 
     function test_startFathersSolitaire() {
         Logic.startGame("fathersSolitaire");
+        compare(Logic.cardSlots[7].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[7].acceptedNumber, 1);
+        compare(Logic.cardSlots[8].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[8].acceptedNumber, 1);
+        compare(Logic.cardSlots[9].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[9].acceptedNumber, 1);
+        compare(Logic.cardSlots[10].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[10].acceptedNumber, 1);
         compare(Logic.cardSlots[0].aboveMe, Logic.deck[0])
         compare(Logic.deck[0].aboveMe, Logic.deck[7])
         compare(Logic.deck[7].aboveMe, Logic.deck[14])
@@ -516,5 +482,151 @@ TestCase {
         Logic.cardSlots[6].aboveMe = null;
         Logic.deck[1].belowMe = null;
         Logic.deck[1].anchors.centerIn = undefined;
+    }
+
+    function test_cardReadyToAnchor_overFaceDownCardInFathersSolitaire()
+    {
+        Logic.deck[50].x = 450;
+        Logic.deck[50].y = 450;
+        Logic.deck[50].z = 1000;
+        Logic.deck[50].faceDown = false;
+        Logic.deck[51].x = 450;
+        Logic.deck[51].y = 450;
+        Logic.deck[51].z = 45;
+        Logic.deck[51].faceDown = true;
+        Logic.selectedGame = "fathersSolitaire";
+        compare(Logic.cardReadyToAnchor(50, true), false)
+        Logic.deck[51].faceDown = false;
+        compare(Logic.cardReadyToAnchor(50, true), true)
+        Logic.deck[50].anchors.centerIn = null;
+        Logic.deck[50].belowMe = null;
+        Logic.deck[51].aboveMe = null;
+    }
+
+    function test_cardReadyToAnchor_overAnAceSlotInFathersSolitaire()
+    {
+        var slot = Logic.cardSlots[10];
+        slot.x = 450;
+        slot.y = 450;
+        slot.acceptsOnlySpecificNumber = true;
+        Logic.deck[51].x = 450;
+        Logic.deck[51].y = 450;
+        Logic.selectedGame = "fathersSolitaire";
+        compare(Logic.cardReadyToAnchor(51, true), false)
+        compare(Logic.deck[51].anchors.centerIn, null)
+        compare(Logic.cardReadyToAnchor(51, false), true)
+        Logic.deck[51].anchors.centerIn = null;
+        Logic.cardSlots[10].aboveMe = null;
+        Logic.deck[51].x = 0;
+        Logic.deck[51].y = 0;
+        Logic.deck[0].x = 450;
+        Logic.deck[0].y = 450;
+        compare(Logic.cardReadyToAnchor(0, true), true)
+        compare(Logic.deck[0].anchors.centerIn, slot)
+        compare(Logic.deck[0].anchors.verticalCenterOffset, 0)
+        Logic.cardSlots[10].aboveMe = null;
+        Logic.selectedGame = "";
+    }
+
+    function test_startNapoleonsGrave() {
+        Logic.startGame("napoleon");
+        compare(Logic.selectedGame, "napoleon")
+        compare(Logic.slotCount, 12);
+        compare(Logic.amountOfRedealsLeft, 0);
+        compare(Logic.cardSlots[2].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[2].acceptedNumber, 7);
+        compare(Logic.cardSlots[4].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[4].acceptedNumber, 7);
+        compare(Logic.cardSlots[6].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[6].acceptedNumber, 6);
+        compare(Logic.cardSlots[8].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[8].acceptedNumber, 7);
+        compare(Logic.cardSlots[10].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[10].acceptedNumber, 7);
+        compare(Logic.cardSlots[11].acceptsOnlySpecificNumber, true);
+        compare(Logic.cardSlots[11].acceptedNumber, 6);
+        compare(Logic.cardSlots[0].aboveMe, Logic.deck[0]);
+        compare(Logic.deck[0].aboveMe, Logic.deck[1]);
+        compare(Logic.deck[1].aboveMe, Logic.deck[2]);
+        compare(Logic.deck[40].aboveMe, Logic.deck[41]);
+        compare(Logic.cardSlots[11].aboveMe.myNumber, 6);
+    }
+
+    function test_gameIsCompleteForNapoleonsGrave() {
+        Logic.selectedGame = "napoleon";
+        Logic.resetDeck();
+        Logic.createSlotsForNapoleonsGrave();
+        compare(Logic.gameIsComplete(), true);
+        compare(Logic.anchorCardOverSlot(Logic.deck[6], Logic.cardSlots[2], true), true);
+        compare(Logic.gameIsComplete(), true);
+        compare(Logic.anchorCardOverSlot(Logic.deck[19], Logic.cardSlots[4], true), true);
+        compare(Logic.gameIsComplete(), true);
+        compare(Logic.anchorCardOverSlot(Logic.deck[5], Logic.cardSlots[6], true), true);
+        compare(Logic.gameIsComplete(), true);
+        compare(Logic.anchorCardOverSlot(Logic.deck[32], Logic.cardSlots[8], true), true);
+        compare(Logic.gameIsComplete(), true);
+        compare(Logic.anchorCardOverSlot(Logic.deck[45], Logic.cardSlots[10], true), true);
+        compare(Logic.gameIsComplete(), true);
+        compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[0], true), false);
+        compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[0], false), true);
+        compare(Logic.gameIsComplete(), false);
+        Logic.cardSlots[0].aboveMe = null;
+        Logic.deck[1].belowMe = null;
+        Logic.deck[1].anchors.centerIn = undefined;
+        compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[1], true), true);
+        compare(Logic.gameIsComplete(), false);
+        Logic.cardSlots[1].aboveMe = null;
+        Logic.deck[1].belowMe = null;
+        Logic.deck[1].anchors.centerIn = undefined;
+        compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[3], true), true);
+        compare(Logic.gameIsComplete(), false);
+        Logic.cardSlots[3].aboveMe = null;
+        Logic.deck[1].belowMe = null;
+        Logic.deck[1].anchors.centerIn = undefined;
+        compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[5], true), true);
+        compare(Logic.gameIsComplete(), false);
+        Logic.cardSlots[5].aboveMe = null;
+        Logic.deck[1].belowMe = null;
+        Logic.deck[1].anchors.centerIn = undefined;
+        compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[7], true), true);
+        compare(Logic.gameIsComplete(), false);
+        Logic.cardSlots[7].aboveMe = null;
+        Logic.deck[1].belowMe = null;
+        Logic.deck[1].anchors.centerIn = undefined;
+        compare(Logic.anchorCardOverSlot(Logic.deck[1], Logic.cardSlots[9], true), true);
+        compare(Logic.gameIsComplete(), false);
+        Logic.cardSlots[9].aboveMe = null;
+        Logic.deck[1].belowMe = null;
+        Logic.deck[1].anchors.centerIn = undefined;
+    }
+
+    function test_anchorCardOverOtherInNapoleonsGrave_7Slot()
+    {
+        Logic.selectedGame = "napoleon";
+        Logic.resetDeck();
+        Logic.createSlotsForNapoleonsGrave();
+        compare(Logic.anchorCardOverSlot(Logic.deck[6], Logic.cardSlots[2], true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[21],Logic.deck[6],true), false);
+        compare(Logic.anchorCardOverOther(Logic.deck[20],Logic.deck[6],true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[21],Logic.deck[20],true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[35],Logic.deck[21],true), true);
+        Logic.resetDeck();
+    }
+
+    function test_anchorCardOverOtherInNapoleonsGrave_6Slot()
+    {
+        Logic.selectedGame = "napoleon";
+        Logic.resetDeck();
+        Logic.createSlotsForNapoleonsGrave();
+        compare(Logic.anchorCardOverSlot(Logic.deck[5], Logic.cardSlots[6], true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[6],Logic.deck[5],true), false);
+        compare(Logic.anchorCardOverOther(Logic.deck[4],Logic.deck[5],true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[16],Logic.deck[4],true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[2],Logic.deck[16],true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[1],Logic.deck[2],true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[0],Logic.deck[1],true), true);
+        compare(Logic.anchorCardOverOther(Logic.deck[13],Logic.deck[0],true), false);
+        compare(Logic.anchorCardOverOther(Logic.deck[18],Logic.deck[0],true), true);
+        Logic.resetDeck();
     }
 }

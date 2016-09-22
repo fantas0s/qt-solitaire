@@ -2,12 +2,28 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fi_FI">
 <context>
+    <name>Desk</name>
+    <message>
+        <location filename="../Desk.qml" line="43"/>
+        <source>TR_Shuffle</source>
+        <translation>Jaa uudelleen</translation>
+    </message>
+</context>
+<context>
     <name>GameChooser</name>
     <message>
         <location filename="../GameChooser.qml" line="11"/>
         <source>TR_DummyBinding</source>
         <translatorcomment>Never visible to user</translatorcomment>
         <translation>Feikki</translation>
+    </message>
+</context>
+<context>
+    <name>GameCompeleteBanner</name>
+    <message>
+        <location filename="../GameCompeleteBanner.qml" line="21"/>
+        <source>TR_Congratulations, you won!</source>
+        <translation>Onnittelut, voitit!</translation>
     </message>
 </context>
 <context>
@@ -69,7 +85,7 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.qml" line="39"/>
+        <location filename="../main.qml" line="45"/>
         <source>TR_Menu</source>
         <translation>Valikko</translation>
     </message>
