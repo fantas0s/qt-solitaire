@@ -4,7 +4,7 @@
 <context>
     <name>Desk</name>
     <message>
-        <location filename="../Desk.qml" line="43"/>
+        <location filename="../Desk.qml" line="48"/>
         <source>TR_Shuffle</source>
         <translation>Shuffle and redeal</translation>
     </message>
