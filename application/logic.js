@@ -1,15 +1,13 @@
 var deck = new Array(52);
-var cardSlots = new Array(12);
+var cardSlots = new Array(13);
 var slotCount = 0;
-var cardSeparator = 30;
-var faceDownCardSeparator = 5;
 var firstRowY = 5;
 var firstGameAreaRowY = 150;
 var firstColumnX = 30;
-var deltaX = 110; // card width (80) + cardSeparator (30).
-var deltaY = 150; // card height (120) + cardSeparator (30).
+var deltaX = 110; // card width (80) + card separator (30).
+var deltaY = 150; // card height (120) + card separator (30).
 var allowedCardOffsetX = 54; // half of card width (80/2) + half of (deltaX - cardwidth) ((110-80)/2) - 1.
-var allowedCardOffsetY = 74; // half of card height (120/2) + half of cardSeparator (30/2) - 1.
+var allowedCardOffsetY = 74; // half of card height (120/2) + half of card separator (30/2) - 1.
 var selectedGame = "none";
 var cardsToBypassWhenDealing = 0;
 var amountOfRedealsLeft = -1;
@@ -17,7 +15,7 @@ var amountOfRedealsLeft = -1;
 function startGame(gameId) {
     selectedGame = gameId;
     resetDeck();
-    if( "fathersSolitaire" === selectedGame )
+    if ("fathersSolitaire" === selectedGame)
     {
         amountOfRedealsLeft = 3;
         mainObject.shuffleButtonVisible = true;
@@ -39,17 +37,34 @@ function startGame(gameId) {
         mainObject.gameAreaHeight = mainWindow.height;
         return true;
     }
+    else if ("blackRed" === selectedGame)
+    {
+        amountOfRedealsLeft = 3;
+        mainObject.shuffleButtonActive = false;
+        mainObject.shuffleButtonVisible = true;
+        shuffleDeck();
+        createSlotsForBlackRed();
+        dealBlackRed();
+        mainObject.gameAreaHeight = 700;
+        return true;
+    }
+
     return false;
 }
 
 function redeal()
 {
-    if( amountOfRedealsLeft )
+    if( mainObject.shuffleButtonActive &&
+        amountOfRedealsLeft )
     {
         amountOfRedealsLeft--;
         if( "fathersSolitaire" === selectedGame )
         {
             reDealFathersSolitaire();
+        }
+        else if ("blackRed" === selectedGame)
+        {
+            reDealBlackRedSolitaire();
         }
         else
         {
@@ -60,6 +75,30 @@ function redeal()
     {
         mainObject.shuffleButtonActive = false;
     }
+}
+
+function reDealBlackRedSolitaire()
+{
+    // Pick cards from slot 12 and pile them face down to slot 11 in opposite order.
+    var source = cardSlots[12];
+    while (source.aboveMe)
+        source = source.aboveMe;
+    // anchor card(s) in reverse order, face down.
+    var cardToPlace = source;
+    var target = cardSlots[11];
+    while (cardToPlace.belowMe) {
+        source = cardToPlace.belowMe;
+        detachCard(cardToPlace);
+        cardToPlace.faceDown = true;
+        if (target.belowMe) {
+            anchorCardOverOther(cardToPlace, target, false);
+        } else {
+            anchorCardOverSlot(cardToPlace, target, false);
+        }
+        target = cardToPlace;
+        cardToPlace = source;
+    }
+    mainObject.shuffleButtonActive = false;
 }
 
 function reDealFathersSolitaire()
@@ -203,6 +242,37 @@ function dealNapoleonsGrave() {
     }
 }
 
+function dealBlackRed() {
+    var index = 0;
+    for( var start = 0; start < 7; start++ )
+    {
+        for( var column = start; column < 7; column++ )
+        {
+            if( start == column )
+            {
+                deck[index].faceDown = false;
+            }
+            if( start > 0 )
+            {
+                anchorCardOverOther(deck[index], deck[index-(7-start)], false);
+            }
+            else
+            {
+                anchorCardOverSlot(deck[index], cardSlots[column], false);
+            }
+            index++;
+        }
+    }
+    // rest of the deck to start pile.
+    anchorCardOverSlot(deck[index], cardSlots[11], false);
+    index++;
+    while (index < 52) {
+        anchorCardOverOther(deck[index], deck[index-1], false);
+        deck[index].anchors.verticalCenterOffset = 0
+        index++;
+    }
+}
+
 function gameIsComplete() {
     if( "fathersSolitaire" === selectedGame )
     {
@@ -225,6 +295,21 @@ function gameIsComplete() {
             cardSlots[5].aboveMe ||
             cardSlots[7].aboveMe ||
             cardSlots[9].aboveMe )
+            return false;
+        else
+            return true;
+    }
+    else if ("blackRed" === selectedGame)
+    {
+        if( cardSlots[0].aboveMe ||
+            cardSlots[1].aboveMe ||
+            cardSlots[2].aboveMe ||
+            cardSlots[3].aboveMe ||
+            cardSlots[4].aboveMe ||
+            cardSlots[5].aboveMe ||
+            cardSlots[6].aboveMe ||
+            cardSlots[11].aboveMe ||
+            cardSlots[12].aboveMe )
             return false;
         else
             return true;
@@ -350,6 +435,7 @@ function createSlotsForFathersSolitaire()
             cardSlots[index+7].z = 1;
             cardSlots[index+7].acceptsOnlySpecificNumber = true;
             cardSlots[index+7].acceptedNumber = 1;
+            cardSlots[index+7].faceUpVerticalOffset = 0;
         }
     }
 }
@@ -392,6 +478,38 @@ function createSlotsForNapoleonsGrave()
         cardSlots[11].acceptedNumber = 6;
         cardSlots[6].acceptsOnlySpecificNumber = true;
         cardSlots[6].acceptedNumber = 6;
+        for( index = 0; index < 12; ++index) {
+            cardSlots[index].faceUpVerticalOffset = 0;
+            cardSlots[index].faceDownVerticalOffset = 0;
+        }
+    }
+}
+
+function createSlotsForBlackRed()
+{
+    createSlots(13);
+    if( slotCount === 13 )
+    {
+        for( var index = 0 ; index < 7 ; index++ ) {
+            cardSlots[index].x = firstColumnX + (index * deltaX);
+            cardSlots[index].y = firstGameAreaRowY;
+            cardSlots[index].z = 1;
+        }
+        for( index = 0 ; index < 4 ; index++ ) {
+            cardSlots[index+7].x = firstColumnX + ((index+3) * deltaX);
+            cardSlots[index+7].y = firstRowY;
+            cardSlots[index+7].z = 1;
+            cardSlots[index+7].acceptsOnlySpecificNumber = true;
+            cardSlots[index+7].acceptedNumber = 1;
+            cardSlots[index+7].faceUpVerticalOffset = 0;
+        }
+        for( index = 0 ; index < 2 ; index++ ) {
+            cardSlots[index+11].x = firstColumnX + (index * deltaX);
+            cardSlots[index+11].y = firstRowY;
+            cardSlots[index+11].z = 1;
+            cardSlots[index+11].faceUpVerticalOffset = 0;
+            cardSlots[index+11].faceDownVerticalOffset = 0;
+        }
     }
 }
 
@@ -427,6 +545,24 @@ function rulesAllowCardOverSlot(cardInQuestion, slotToUse)
             return false;
         else // Everything else is fine if original check was passed.
             return true;
+    }
+    else if ("blackRed" === selectedGame)
+    {
+        // Player cannot place a card over pile slots.
+        if( (slotToUse === cardSlots[11]) ||
+            (slotToUse === cardSlots[12]) )
+            return false;
+        // Aceslot only accepts ace that is not part of a pile.
+        if( slotToUse.acceptsOnlySpecificNumber )
+        {
+            // card already matches to slot or we wouldn't be here
+            if( cardInQuestion.aboveMe === null )
+                return true;
+            else
+                return false;
+        }
+        // allows any card over empty slot when it's not ace slot
+        return true;
     }
     else
     {
@@ -477,8 +613,29 @@ function cardIsOverAceSlot(cardObject)
         return false;
 }
 
+function cardIsRed(cardToCheck)
+{
+    if ((cardToCheck.mySuite === "heart") ||
+        (cardToCheck.mySuite === "diamond"))
+        return true;
+    else
+        return false;
+}
+
+function cardsAreBlackAndRed(cardBelow, cardOnTop)
+{
+    if ( cardIsRed(cardBelow) &&
+        !cardIsRed(cardOnTop) )
+            return true;
+    if(!cardIsRed(cardBelow) &&
+        cardIsRed(cardOnTop) )
+            return true;
+    return false;
+}
+
 function rulesAllowCardOverOther(cardOnTop, cardBelow)
 {
+    var slot = getSlotBelowCard(cardBelow);
     if( selectedGame == "fathersSolitaire" )
     {
         if( cardBelow.faceDown )
@@ -508,7 +665,6 @@ function rulesAllowCardOverOther(cardOnTop, cardBelow)
     }
     else if (selectedGame == "napoleon")
     {
-        var slot = getSlotBelowCard(cardBelow);
         // can always pile to turnover slot
         if( cardSlots[1] === slot)
             return true;
@@ -543,6 +699,39 @@ function rulesAllowCardOverOther(cardOnTop, cardBelow)
         // only one card on generic slots.
         return false;
     }
+    else if ("blackRed" === selectedGame)
+    {
+        // Never OK to be over face down card
+        if( cardBelow.faceDown )
+            return false;
+        // Cannot be placed to either pile.
+        if ( (cardSlots[11] === slot) ||
+             (cardSlots[12] === slot) )
+            return false;
+        // Ace slot
+        if( slot.acceptsOnlySpecificNumber )
+        {
+            // Card needs to be of same suite and one larger than the one below
+            if( (cardBelow.mySuite === cardOnTop.mySuite) &&
+                ((cardBelow.myNumber+1) === cardOnTop.myNumber) )
+            {
+                // Card needs to be alone
+                if( cardOnTop.aboveMe === null )
+                    return true;
+            }
+            return false;
+        }
+        // Elsewhere card needs to be of suite of opposite color and one smaller than the one below
+        if( (cardBelow.myNumber === (cardOnTop.myNumber+1)) &&
+            cardsAreBlackAndRed(cardBelow, cardOnTop) )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     else
     {
         console.log("No rules defined when placing card over another!");
@@ -550,22 +739,13 @@ function rulesAllowCardOverOther(cardOnTop, cardBelow)
     }
 }
 
-function getVerticalOffsetForCard(cardBelow)
+function getVerticalOffsetForCard(cardObject)
 {
-    if( selectedGame === "fathersSolitaire" )
-    {
-        if( cardIsOverAceSlot(cardBelow) )
-            return 0;
-    }
-    else if( selectedGame === "napoleon" )
-    {
-        return 0;
-    }
-    // Default pileup used if rules make no exception to it or no rules used.
-    if( cardBelow.faceDown )
-        return faceDownCardSeparator;
+    var slot = getSlotBelowCard(cardObject);
+    if (cardObject.faceDown)
+        return slot.faceDownVerticalOffset;
     else
-        return cardSeparator;
+        return slot.faceUpVerticalOffset;
 }
 
 function anchorCardOverOther(cardOnTop, cardBelow, applyRuling)
@@ -660,4 +840,50 @@ function cardReadyToAnchor(cardIndex, applyRuling)
         cardToAnchor.anchors.centerIn = null;
     }
     return returnValue;
+}
+
+function facedownCardClickAction(cardIndex)
+{
+    if (52 > cardIndex) {
+        var cardForAction = deck[cardIndex];
+        var slot = getSlotBelowCard(cardForAction);
+        if ("blackRed" === selectedGame) {
+            if (cardSlots[11] === slot) {
+                // Take third card from the top
+                var cardToDetach = cardForAction;
+                for (var loop = 0; loop < 2; loop++) {
+                    if (cardToDetach.belowMe.belowMe)
+                        cardToDetach = cardToDetach.belowMe;
+                }
+                // Detach card(s) from pile
+                cardToDetach.belowMe.aboveMe = null;
+                cardToDetach.belowMe = null;
+                cardToDetach.anchors.centerIn = null;
+                // find top card of turnover pile (or slot itself)
+                var target = cardSlots[12];
+                while (target.aboveMe)
+                    target = target.aboveMe;
+                // anchor card(s) in reverse order, face up.
+                while (cardForAction) {
+                    cardToDetach = cardForAction;
+                    cardForAction = cardToDetach.belowMe;
+                    detachCard(cardToDetach);
+                    cardToDetach.faceDown = false;
+                    if (target.belowMe) {
+                        anchorCardOverOther(cardToDetach, target, false);
+                    } else {
+                        anchorCardOverSlot(cardToDetach, target, false);
+                    }
+                    target = cardToDetach;
+                }
+                if( null === cardSlots[11].aboveMe )
+                    mainObject.shuffleButtonActive = true;
+                return true;
+            }
+        }
+        // For everything else, no-op.
+    } else {
+        console.log("Invalid card index ", cardIndex, " tried to perform card click action, aborting...");
+    }
+    return false;
 }

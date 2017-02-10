@@ -8,6 +8,8 @@ Rectangle {
     color: "transparent"
     property bool acceptsOnlySpecificNumber: false
     property int acceptedNumber: 1
+    property int faceDownVerticalOffset: 5
+    property int faceUpVerticalOffset: 30
     property Item aboveMe: null
     Text {
         id: aceMarker

@@ -15,10 +15,12 @@ MouseArea {
     width: 80
     height: 120
     onClicked: {
-        if( faceDown &&
-            (aboveMe === null) )
-        {
-            faceDown = false;
+        if (faceDown) {
+            if (!mainObject.cardHasFacedownClickAction(myId)) {
+                if (aboveMe === null) {
+                    faceDown = false;
+                }
+            }
         }
     }
     onPressed: {

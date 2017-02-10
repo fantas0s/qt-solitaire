@@ -32,6 +32,11 @@ Rectangle {
         }
         return false;
     }
+
+    function cardHasFacedownClickAction(index) {
+        return Logic.facedownCardClickAction(index);
+    }
+
     Component.onCompleted: {
         Logic.createDeck();
     }
